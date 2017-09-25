@@ -1,7 +1,7 @@
 package com.example.hesham.moves.Utilities;
 
-import com.example.hesham.moves.Model.ModelALLMOVESDATA.MovesModel;
-import com.example.hesham.moves.Model.ModelVedio.MoviesVedio;
+import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
+import com.example.hesham.moves.model.modelvedio.MoviesVedio;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

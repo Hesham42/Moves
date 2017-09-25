@@ -12,10 +12,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.hesham.moves.Adapter.MoviesAdapter;
-import com.example.hesham.moves.Adapter.RecyclerTouchListener;
-import com.example.hesham.moves.Model.ModelALLMOVESDATA.MovesModel;
-import com.example.hesham.moves.Model.ModelALLMOVESDATA.ResultModel;
+import com.example.hesham.moves.adapter.MoviesAdapter;
+import com.example.hesham.moves.adapter.RecyclerTouchListener;
+import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
+import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 import com.example.hesham.moves.Utilities.MoviesAPI;
 
 import java.util.ArrayList;
@@ -65,10 +65,10 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
                 model = response.body();
                 resultModels = model.getResults();
-//                for (int i = 0; i < resultModels.size(); i++){
-//                    Log.d("Guinness", "http://image.tmdb.org/t/p/w185/" + resultModels.get(i).getPosterPath().toString());
-//            }
-                adapter = new MoviesAdapter(resultModels, getApplicationContext());
+                for (int i = 0; i < resultModels.size(); i++){
+                    Log.d("Guinness", "http://image.tmdb.org/t/p/w185/" + resultModels.get(i).getPosterPath().toString());
+            }
+                adapter = new MoviesAdapter(resultModels, MainActivity.this);
 
                 recyclerView.setAdapter(adapter);
             }

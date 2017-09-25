@@ -1,4 +1,4 @@
-package com.example.hesham.moves.Adapter;
+package com.example.hesham.moves.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.hesham.moves.Model.ModelALLMOVESDATA.ResultModel;
+import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 import com.example.hesham.moves.R;
 import com.squareup.picasso.Picasso;
 

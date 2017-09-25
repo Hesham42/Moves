@@ -1,4 +1,4 @@
-package com.example.hesham.moves.Adapter;
+package com.example.hesham.moves.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

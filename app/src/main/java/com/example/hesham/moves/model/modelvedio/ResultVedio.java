@@ -1,5 +1,5 @@
 
-package com.example.hesham.moves.Model.ModelVedio;
+package com.example.hesham.moves.model.modelvedio;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

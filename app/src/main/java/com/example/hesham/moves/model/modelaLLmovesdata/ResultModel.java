@@ -1,4 +1,4 @@
-package com.example.hesham.moves.Model.ModelALLMOVESDATA;
+package com.example.hesham.moves.model.modelaLLmovesdata;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

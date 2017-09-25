@@ -1,5 +1,5 @@
 
-package com.example.hesham.moves.Model.ModelReviews;
+package com.example.hesham.moves.model.modelreviews;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
