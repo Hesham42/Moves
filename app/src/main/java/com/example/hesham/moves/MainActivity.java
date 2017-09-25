@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
 
 //            }
                 adapter = new MoviesAdapter(resultModels, MainActivity.this);
-                adapter.notifyDataSetChanged();
                 recyclerView.setAdapter(adapter);
             }
 
