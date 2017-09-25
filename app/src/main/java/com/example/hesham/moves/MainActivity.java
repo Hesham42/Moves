@@ -1,6 +1,7 @@
 package com.example.hesham.moves;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.hesham.moves.adapter.MoviesAdapter;
+import com.example.hesham.moves.adapter.adapterOfallMoves.MoviesAdapter;
 import com.example.hesham.moves.adapter.RecyclerTouchListener;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
@@ -65,13 +66,17 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
                 model = response.body();
                 resultModels = model.getResults();
-                for (int i = 0; i < resultModels.size(); i++){
-                    Log.d("Guinness", "http://image.tmdb.org/t/p/w185/" + resultModels.get(i).getPosterPath().toString());
-            }
-                adapter = new MoviesAdapter(resultModels, MainActivity.this);
+                Log.d("Guinness",response.toString());
 
+//                for (int i = 0; i < resultModels.size(); i++){
+//                Log.d("Guinness", "http://image.tmdb.org/t/p/w185/" + resultModels.get(i).getPosterPath().toString());
+
+//            }
+                adapter = new MoviesAdapter(resultModels, MainActivity.this);
+                adapter.notifyDataSetChanged();
                 recyclerView.setAdapter(adapter);
             }
+
 
             @Override
             public void onFailure(Call<MovesModel> call, Throwable t) {
@@ -84,8 +89,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view, int position) {
-             Log.d("Guinness",resultModels.get(position).getId().toString());
-
+//             Log.d("Guinness",resultModels.get(position).getId().toString());
+                Intent i = new Intent(MainActivity.this,Details.class);
+//                ResultModel model=resultModels.get(position);
+//                i.putExtra("sampleObject",model);
+                startActivity(i);
             }
 
             @Override

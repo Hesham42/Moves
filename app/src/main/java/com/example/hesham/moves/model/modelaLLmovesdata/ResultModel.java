@@ -1,10 +1,11 @@
 package com.example.hesham.moves.model.modelaLLmovesdata;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ResultModel {
+public class ResultModel implements Serializable{
 
     @SerializedName("vote_count")
     @Expose
