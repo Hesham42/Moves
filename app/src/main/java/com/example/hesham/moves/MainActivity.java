@@ -90,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view, int position) {
 //             Log.d("Guinness",resultModels.get(position).getId().toString());
                 Intent i = new Intent(MainActivity.this,Details.class);
-//                ResultModel model=resultModels.get(position);
-//                i.putExtra("sampleObject",model);
+                ResultModel model=resultModels.get(position);
+                i.putExtra("sampleObject",model);
                 startActivity(i);
             }
 
