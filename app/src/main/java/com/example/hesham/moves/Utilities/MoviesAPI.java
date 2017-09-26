@@ -1,6 +1,7 @@
 package com.example.hesham.moves.Utilities;
 
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
+import com.example.hesham.moves.model.modelreviews.MoviesReviews;
 import com.example.hesham.moves.model.modelvedio.MoviesVedio;
 
 import retrofit2.Call;
@@ -20,10 +21,14 @@ public interface MoviesAPI {
     @GET("/3/movie/popular?api_key=28f81313599c7074d6380330fe1dca22")
     Call<MovesModel> getAllMoves();
     @GET("/3/movie/{id}/videos?api_key=28f81313599c7074d6380330fe1dca22")
-    Call<MoviesVedio> selectedVedio(@Path("id") int id);
+    Call<MoviesVedio> selectedVedio(@Path("id") String id);
+
+    @GET("/3/movie/321612/videos?api_key=28f81313599c7074d6380330fe1dca22")
+    Call<MoviesVedio>GetID();
+
 
     @GET("/3/movie/{id}/reviews?api_key=28f81313599c7074d6380330fe1dca22")
 
-    Call<MoviesVedio> selectedReviews(@Path("id") int id);
+    Call<MoviesReviews> selectedReviews(@Path("id") String id);
 
 }

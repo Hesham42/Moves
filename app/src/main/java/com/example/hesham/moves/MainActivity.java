@@ -64,18 +64,24 @@ public class MainActivity extends AppCompatActivity {
         reCall.enqueue(new Callback<MovesModel>() {
             @Override
             public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
-                model = response.body();
-                resultModels = model.getResults();
-                Log.d("Guinness",response.toString());
+                if (response.isSuccessful()) {
+                    model = response.body();
+                    Log.d("Guinness", model.toString());
+
+                    resultModels = model.getResults();
+                    Log.d("Guinness", response.toString());
 
 //                for (int i = 0; i < resultModels.size(); i++){
 //                Log.d("Guinness", "http://image.tmdb.org/t/p/w185/" + resultModels.get(i).getPosterPath().toString());
 
 //            }
-                adapter = new MoviesAdapter(resultModels, MainActivity.this);
-                recyclerView.setAdapter(adapter);
+                    adapter = new MoviesAdapter(resultModels, MainActivity.this);
+                    recyclerView.setAdapter(adapter);
+                }else
+                    {
+                        Log.d("Guinness"," the respons code of Main "+response.code());
+                    }
             }
-
 
             @Override
             public void onFailure(Call<MovesModel> call, Throwable t) {
