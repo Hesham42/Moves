@@ -8,9 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.hesham.moves.Utilities.MoviesAPI;
+import com.example.hesham.moves.model.modelVedio.ResultTrial;
+import com.example.hesham.moves.model.modelVedio.Trial;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
-import com.example.hesham.moves.model.modelvedio.MoviesVedio;
-import com.example.hesham.moves.model.modelvedio.ResultVedio;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,9 +28,9 @@ public class Details extends AppCompatActivity {
     TextView Title, data, Time, Rate, Dec;
 
     MoviesAPI moviesAPI;
-    MoviesVedio moviesVedio;
-    List<ResultVedio> resultVedio= new ArrayList<>();
-    List<String> Keys;
+    Trial trial;
+    List<ResultTrial> resultTrials= new ArrayList<>();
+    List<String> Keys= new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,34 +57,23 @@ public class Details extends AppCompatActivity {
             Rate.setText(model.getVoteAverage()+"/10");
 
 
-            //        Call<MoviesVedio> reCall = moviesAPI.selectedVedio(model.getId().toString());
-            Call<MoviesVedio> reCall = moviesAPI.GetID();
-            reCall.enqueue(new Callback<MoviesVedio>() {
+                    Call<Trial> reCall = moviesAPI.selectedVedio(model.getId());
+            reCall.enqueue(new Callback<Trial>() {
                 @Override
-                public void onResponse(Call<MoviesVedio> call, Response<MoviesVedio> response) {
-                    if (response.isSuccessful()) {
-
-//                        Log.d("Guinness", "Respons is Successful"+response.body().getId());
-                        moviesVedio = response.body();
-//
-                        Log.d("Guinness",moviesVedio.toString());
-                        resultVedio = moviesVedio.getResultVedios();
-
-//                        for (int i = 0; i < resultVedio.size(); i++) {
-//                            Keys.add(resultVedio.get(i).getKey());
-////                        // TODO: 9/26/2017  Must Create The Adapter
-//                            Log.d("Guinness", Keys.toString());
-//
-//                        }
-                    }else
+                public void onResponse(Call<Trial> call, Response<Trial> response) {
+                    trial= response.body();
+                    resultTrials= trial.getResults();
+                    for (int i=0;i<resultTrials.size();i++)
                     {
-                        Log.d("Guinness", "Failure in respons "+response.code());
+                        Log.d("Guinness",resultTrials.get(i).getKey());
+                        Keys.add(resultTrials.get(i).getKey());
+
                     }
+
                 }
 
                 @Override
-                public void onFailure(Call<MoviesVedio> call, Throwable t) {
-                    Log.d("Guinness", "Failure in onFailure "+t.toString());
+                public void onFailure(Call<Trial> call, Throwable t) {
 
                 }
             });

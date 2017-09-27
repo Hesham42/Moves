@@ -1,10 +1,10 @@
 
-package com.example.hesham.moves.model.modelvedio;
+package com.example.hesham.moves.model.modelVedio;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ResultVedio {
+public class ResultTrial {
 
     @SerializedName("id")
     @Expose

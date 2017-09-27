@@ -4,7 +4,7 @@ package com.example.hesham.moves.model.modelreviews;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ResultReviews {
+public class Resultreviews {
 
     @SerializedName("id")
     @Expose
