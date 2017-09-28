@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.example.hesham.moves.Utilities.InternetConnection;
 import com.example.hesham.moves.adapter.adapterOfallMoves.MoviesAdapter;
 import com.example.hesham.moves.adapter.RecyclerTouchListener;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
@@ -42,76 +44,80 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        if (!connectedInternet())
-//        {
-//            Toast.makeText(this,"Opent the internet connection ",Toast.LENGTH_LONG).show();
-//            return;
-//}
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MoviesAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        moviesAPI = retrofit.create(MoviesAPI.class);
-
         recyclerView = (RecyclerView) findViewById(R.id.rec);
         recyclerView.setHasFixedSize(true);
-        gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
-        recyclerView.setLayoutManager(gridLayoutManager); // set LayoutManager to RecyclerView
+        gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+        recyclerView.setLayoutManager(gridLayoutManager);
 
-        Call<MovesModel> reCall = moviesAPI.getAllMoves();
-        reCall.enqueue(new Callback<MovesModel>() {
-            @Override
-            public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
-                if (response.isSuccessful()) {
-                    model = response.body();
-                    Log.d("Guinness", model.toString());
+        if (InternetConnection.checkConnection(MainActivity.this)) {
 
-                    resultModels = model.getResults();
-                    Log.d("Guinness", response.toString());
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(MoviesAPI.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-//                for (int i = 0; i < resultModels.size(); i++){
-//                Log.d("Guinness", "http://image.tmdb.org/t/p/w185/" + resultModels.get(i).getPosterPath().toString());
+            moviesAPI = retrofit.create(MoviesAPI.class);
 
-//            }
-                    adapter = new MoviesAdapter(resultModels, MainActivity.this);
-                    recyclerView.setAdapter(adapter);
-                }else
+
+            Call<MovesModel> reCall = moviesAPI.getAllMoves();
+            reCall.enqueue(new Callback<MovesModel>() {
+                @Override
+                public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
+                    if (response.isSuccessful()) {
+                        model = response.body();
+                        Log.d("Guinness", model.toString());
+
+                        resultModels = model.getResults();
+                        Log.d("Guinness", response.toString());
+
+                        adapter = new MoviesAdapter(resultModels, MainActivity.this);
+                        recyclerView.setAdapter(adapter);
+                    }else
                     {
                         Log.d("Guinness"," the respons code of Main "+response.code());
                     }
-            }
+                }
 
-            @Override
-            public void onFailure(Call<MovesModel> call, Throwable t) {
-                Log.d("Guinness", "Respons get onFailure");
+                @Override
+                public void onFailure(Call<MovesModel> call, Throwable t) {
+                    Log.d("Guinness", "Respons get onFailure");
 
-            }
-        });
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(),
-                recyclerView, new RecyclerTouchListener.ClickListener() {
+                }
+            });
+            recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(),
+                    recyclerView, new RecyclerTouchListener.ClickListener() {
 
-            @Override
-            public void onClick(View view, int position) {
+                @Override
+                public void onClick(View view, int position) {
 //             Log.d("Guinness",resultModels.get(position).getId().toString());
 
 
-                Intent i = new Intent(MainActivity.this,Details.class);
-                ResultModel model=resultModels.get(position);
-                i.putExtra("sampleObject",model);
-                startActivity(i);
+                    Intent i = new Intent(MainActivity.this,Details.class);
+                    ResultModel model=resultModels.get(position);
+                    i.putExtra("sampleObject",model);
+                    startActivity(i);
 
 
-            }
+                }
 
-            @Override
-            public void onLongClick(View view, int position) {
+                @Override
+                public void onLongClick(View view, int position) {
 
-            }
-        }));
+                }
+            }));
+
+
+        }else
+        {
+            Toast.makeText(this,"there is no internet",Toast.LENGTH_LONG).show();
+
+        }
 
 
     }
+
+
+
 
 
     @Override
@@ -138,15 +144,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public boolean connectedInternet() {
-        ConnectivityManager manager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
-        if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
 }
