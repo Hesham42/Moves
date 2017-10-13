@@ -64,12 +64,12 @@ public class Details extends AppCompatActivity {
         Revo = (TextView) findViewById(R.id.Reveo);
         img = (ImageView) findViewById(R.id.ImageOfResutl);
 
-//        recyclerView = (RecyclerView) findViewById(R.id.DetailsRec);
-//        recyclerView.setHasFixedSize(true);
-        //to use RecycleView, you need a layout manager. default is LinearLayoutManager
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView = (RecyclerView) findViewById(R.id.DetailsRec);
+        recyclerView.setHasFixedSize(true);
+//        to use RecycleView, you need a layout manager. default is LinearLayoutManager
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         if (InternetConnection.checkConnection(getApplicationContext())) {
             Retrofit retrofit = new Retrofit.Builder()

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,8 @@ public class Popular extends Fragment {
 
             MainActivity activity=(MainActivity)getActivity();
             this.PopularResult=activity.getPopularResult();
+
+            Log.e("Guinness" , "popular data is->  .....  "+ PopularResult.toString() );
 
             RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_popular);
             rv.setHasFixedSize(true);

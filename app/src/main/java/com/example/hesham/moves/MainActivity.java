@@ -1,6 +1,7 @@
 package com.example.hesham.moves;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     List<ResultModel> PopularResult = new ArrayList<>();
     List<ResultModel> TopRateResult = new ArrayList<>();
     List<ResultModel> Favourit = new ArrayList<>();
+    int i=0;
 
 
 
@@ -58,8 +60,13 @@ public class MainActivity extends AppCompatActivity {
         init();
 
 
+
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 
     private void CallApi() {
         if (InternetConnection.checkConnection(MainActivity.this)) {
@@ -78,13 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
                     if (response.isSuccessful()) {
                         PoplarModel = response.body();
-                        Log.d("Guinness", PoplarModel.toString());
+                        Log.e("Guinness", "p main"+PoplarModel.toString());
 
                         PopularResult = PoplarModel.getResults();
-                        Log.d("Guinness", response.toString());
+//                        Log.e("Guinness", response.toString());
 
-//                        adapter = new MoviesAdapter(PopularResult, MainActivity.this);
-//                        recyclerView.setAdapter(adapter);
                     } else {
                         Log.d("Guinness", " the respons code of popular " + response.code());
                     }
@@ -104,10 +109,10 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
                     if (response.isSuccessful()) {
                         TopRateModel = response.body();
-                        Log.d("Guinness", TopRateModel.toString());
+                        Log.e("Guinness", "top "+TopRateModel.toString());
 
                         TopRateResult = TopRateModel.getResults();
-                        Log.d("Guinness", response.toString());
+//                        Log.d("Guinness", response.toString());
 
                     } else {
                         Log.d("Guinness", " the respons code of TopRate " + response.code());
@@ -127,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void init() {
+        SystemClock.sleep(2000);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -138,11 +144,13 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
-
+        tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
+        Log.e("Guiness",String.valueOf(tabLayout.getTabCount()));
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             tab = tabLayout.getTabAt(i);
             tab.setCustomView(pagerAdapter.getTabView(i));
         }
+
     }
 
 
@@ -195,13 +203,31 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-
+            Fragment fragment= null;
             if (position ==0) {
-                return new Popular();
-            } else if (position == 1) {
-                return new Favourit();
-            } else return new TopRate();
 
+                fragment=new Popular();
+                Log.e("Guinness" , "to popular page");
+//                return fragment;
+
+            }
+            else if (position == 1)
+            {
+
+                fragment=new Popular();
+                Log.e("Guinness" , "to favorit page");
+
+//                return fragment;
+            }
+            else if (position==2){
+                fragment=new TopRate();
+                Log.e("Guinness" , "to toprate page");
+
+//                return fragment;
+            }
+
+
+            return fragment;
         }
 
 
@@ -227,6 +253,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public List<ResultModel> getFavourit() {
-        return Favourit;
+        return TopRateResult;
     }
+
+
+
 }
