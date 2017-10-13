@@ -1,17 +1,21 @@
 package com.example.hesham.moves.page;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.hesham.moves.Details;
 import com.example.hesham.moves.MainActivity;
 import com.example.hesham.moves.R;
 import com.example.hesham.moves.adapter.FragmentAdapter.AdapterFavourit;
+import com.example.hesham.moves.adapter.RecyclerTouchListener;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 
 import java.util.ArrayList;
@@ -53,8 +57,27 @@ public class Favourit extends Fragment {
 
         rv.setAdapter(adapter);
 
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        rv.setLayoutManager(llm);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        rv.setLayoutManager(gridLayoutManager);
+
+
+        rv.addOnItemTouchListener(new RecyclerTouchListener(getActivity().getBaseContext(),
+                                rv, new RecyclerTouchListener.ClickListener() {
+
+            @Override
+            public void onClick(View view, int position) {
+                Intent i = new Intent(getActivity(),Details.class);
+                ResultModel model=Favourit.get(position);
+                i.putExtra("sampleObject",model);
+                startActivity(i);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
 
         return rootView;
     }

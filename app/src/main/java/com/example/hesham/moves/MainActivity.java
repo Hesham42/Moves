@@ -33,14 +33,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends  AppCompatActivity implements OOP{
+public class MainActivity extends AppCompatActivity {
     MoviesAPI moviesAPI;
     MovesModel PoplarModel;
     MovesModel TopRateModel;
-    OOP data;
 
-
-
+    Toolbar toolbar;
+    PagerAdapter pagerAdapter;
+    ViewPager viewPager;
+    TabLayout tabLayout;
+    TabLayout.Tab tab;
     List<ResultModel> PopularResult = new ArrayList<>();
     List<ResultModel> TopRateResult = new ArrayList<>();
     List<ResultModel> Favourit = new ArrayList<>();
@@ -50,8 +52,8 @@ public class MainActivity extends  AppCompatActivity implements OOP{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-           CallApi();
-            init();
+        CallApi();
+        init();
 
 
     }
@@ -81,9 +83,8 @@ public class MainActivity extends  AppCompatActivity implements OOP{
 
 //                        adapter = new MoviesAdapter(PopularResult, MainActivity.this);
 //                        recyclerView.setAdapter(adapter);
-                    }else
-                    {
-                        Log.d("Guinness"," the respons code of popular "+response.code());
+                    } else {
+                        Log.d("Guinness", " the respons code of popular " + response.code());
                     }
                 }
 
@@ -95,9 +96,7 @@ public class MainActivity extends  AppCompatActivity implements OOP{
             });
 
 
-
-
-            Call<MovesModel> TopRate=moviesAPI.getAllMovestop_rated();
+            Call<MovesModel> TopRate = moviesAPI.getAllMovestop_rated();
             TopRate.enqueue(new Callback<MovesModel>() {
                 @Override
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
@@ -108,9 +107,8 @@ public class MainActivity extends  AppCompatActivity implements OOP{
                         TopRateResult = TopRateModel.getResults();
                         Log.d("Guinness", response.toString());
 
-                    }else
-                    {
-                        Log.d("Guinness"," the respons code of TopRate "+response.code());
+                    } else {
+                        Log.d("Guinness", " the respons code of TopRate " + response.code());
 
                     }
 
@@ -127,27 +125,32 @@ public class MainActivity extends  AppCompatActivity implements OOP{
 
 
     private void init() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), MainActivity.this);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), MainActivity.this);
         viewPager.setAdapter(pagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
-        for(int i = 0; i < tabLayout.getTabCount(); i++){
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            tab = tabLayout.getTabAt(i);
             tab.setCustomView(pagerAdapter.getTabView(i));
         }
     }
 
 
     @Override
-    public void onResume() { super.onResume();}
+    public void onResume() {
+        super.onResume();
+    }
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -155,26 +158,26 @@ public class MainActivity extends  AppCompatActivity implements OOP{
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id == R.id.Pouplar) {
+            viewPager.setCurrentItem(0);
+        }
+        if (id == R.id.Favourit) {
+            viewPager.setCurrentItem(1);
 
-        if(id == R.id.Favourit){
-            return true;
+        }
+        if (id == R.id.TopRate) {
+            viewPager.setCurrentItem(2);
+
         }
 
         return super.onOptionsItemSelected(item);
 
     }
 
-    @Override
-    public void respons(List<ResultModel> ResultModel) {
-        android.app.FragmentManager manager= getFragmentManager();
-
-    }
-
 
     class PagerAdapter extends FragmentPagerAdapter {
-
         String tabTitles[] = new String[]{"popular", "Favourit", "TopRate"};
         Context context;
 
@@ -190,36 +193,29 @@ public class MainActivity extends  AppCompatActivity implements OOP{
 
         @Override
         public Fragment getItem(int position) {
-            Fragment fragment = null;
 
-            switch (position) {
-                case 0:
-                    return new Popular();
-                case 1:
-                    return new Favourit();
-                case 2:
-                    return new TopRate();
-            }
+            if (position ==0) {
+                return new Popular();
+            } else if (position == 1) {
+                return new Favourit();
+            } else return new TopRate();
 
-            return null;
         }
-
-
-
 
 
         @Override
-        public CharSequence getPageTitle(int position){
+        public CharSequence getPageTitle(int position) {
             return tabTitles[position];
         }
 
-        public View getTabView(int position){
+        public View getTabView(int position) {
             View tab = LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_tab, null);
             TextView tv = (TextView) tab.findViewById(R.id.custom_text);
             tv.setText(tabTitles[position]);
             return tab;
         }
     }
+
     public List<ResultModel> getPopularResult() {
         return PopularResult;
     }
