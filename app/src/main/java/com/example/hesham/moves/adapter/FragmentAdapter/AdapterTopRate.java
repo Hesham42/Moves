@@ -20,36 +20,38 @@ import java.util.List;
  * Created by Hesham on 10/13/2017.
  */
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class AdapterTopRate  extends RecyclerView.Adapter<AdapterTopRate.MyViewHolder> {
     List<ResultModel> resultModels =new ArrayList<>();
 
+
     Context context;
+
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        ImageView img;
+        public CardView mCardView;
+        public ImageView img;
         public MyViewHolder(View v){
             super(v);
 
-            img=(ImageView)v.findViewById(R.id.iv_image);
+            mCardView = (CardView) v.findViewById(R.id.card_view_top_rate);
+            img=(ImageView)v.findViewById(R.id.iv_image_top_rate);
         }
 
     }
 
-
-
-    public MyAdapter(List<ResultModel> resultModels) {
-        this.resultModels = resultModels;
+    public AdapterTopRate(List<ResultModel> resultModels, Context activity){
+        this.resultModels=resultModels;
+        this.context=activity;
     }
 
     @Override
-    public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view, parent, false);
-        this.context=parent.getContext();
-        MyViewHolder vh = new MyViewHolder(v);
+    public AdapterTopRate.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_top_rate, parent, false);
+        AdapterTopRate.MyViewHolder vh = new AdapterTopRate.MyViewHolder(v);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position){
+    public void onBindViewHolder(AdapterTopRate.MyViewHolder holder, int position){
         Picasso.with(context).load("http://image.tmdb.org/t/p/w185/" + resultModels.get(position).getPosterPath()).into(holder.img);
 
     }

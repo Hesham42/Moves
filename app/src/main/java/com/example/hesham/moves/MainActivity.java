@@ -17,10 +17,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.hesham.moves.Utilities.InternetConnection;
+import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
-import com.example.hesham.moves.Utilities.MoviesAPI;
-import com.example.hesham.moves.page.BlankFragment;
+import com.example.hesham.moves.page.Favourit;
+import com.example.hesham.moves.page.Popular;
+import com.example.hesham.moves.page.TopRate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,20 +33,97 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends  AppCompatActivity{
+public class MainActivity extends  AppCompatActivity implements OOP{
+    MoviesAPI moviesAPI;
+    MovesModel PoplarModel;
+    MovesModel TopRateModel;
+    OOP data;
 
+
+
+    List<ResultModel> PopularResult = new ArrayList<>();
+    List<ResultModel> TopRateResult = new ArrayList<>();
+    List<ResultModel> Favourit = new ArrayList<>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        init();
+           CallApi();
+            init();
 
 
     }
 
 
+    private void CallApi() {
+        if (InternetConnection.checkConnection(MainActivity.this)) {
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(MoviesAPI.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            moviesAPI = retrofit.create(MoviesAPI.class);
+
+
+            Call<MovesModel> PopularRecall = moviesAPI.getAllMovesPopular();
+            PopularRecall.enqueue(new Callback<MovesModel>() {
+                @Override
+                public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
+                    if (response.isSuccessful()) {
+                        PoplarModel = response.body();
+                        Log.d("Guinness", PoplarModel.toString());
+
+                        PopularResult = PoplarModel.getResults();
+                        Log.d("Guinness", response.toString());
+
+//                        adapter = new MoviesAdapter(PopularResult, MainActivity.this);
+//                        recyclerView.setAdapter(adapter);
+                    }else
+                    {
+                        Log.d("Guinness"," the respons code of popular "+response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<MovesModel> call, Throwable t) {
+                    Log.d("Guinness", "Respons get onFailure popular");
+
+                }
+            });
+
+
+
+
+            Call<MovesModel> TopRate=moviesAPI.getAllMovestop_rated();
+            TopRate.enqueue(new Callback<MovesModel>() {
+                @Override
+                public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
+                    if (response.isSuccessful()) {
+                        TopRateModel = response.body();
+                        Log.d("Guinness", TopRateModel.toString());
+
+                        TopRateResult = TopRateModel.getResults();
+                        Log.d("Guinness", response.toString());
+
+                    }else
+                    {
+                        Log.d("Guinness"," the respons code of TopRate "+response.code());
+
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<MovesModel> call, Throwable t) {
+                    Log.d("Guinness", "Respons get onFailure TopRate");
+
+                }
+            });
+        }
+    }
 
 
     private void init() {
@@ -87,10 +166,16 @@ public class MainActivity extends  AppCompatActivity{
 
     }
 
+    @Override
+    public void respons(List<ResultModel> ResultModel) {
+        android.app.FragmentManager manager= getFragmentManager();
+
+    }
+
 
     class PagerAdapter extends FragmentPagerAdapter {
 
-        String tabTitles[] = new String[]{"Popular", "Favourit", "TopRate"};
+        String tabTitles[] = new String[]{"popular", "Favourit", "TopRate"};
         Context context;
 
         public PagerAdapter(FragmentManager fm, Context context) {
@@ -105,18 +190,21 @@ public class MainActivity extends  AppCompatActivity{
 
         @Override
         public Fragment getItem(int position) {
+            Fragment fragment = null;
 
             switch (position) {
                 case 0:
-                    return new BlankFragment("Pouplar");
+                    return new Popular();
                 case 1:
-                    return new BlankFragment("TopRate");
+                    return new Favourit();
                 case 2:
-                    return new BlankFragment("Favourit");
-                default:
-                    return null;
+                    return new TopRate();
             }
-            }
+
+            return null;
+        }
+
+
 
 
 
@@ -131,5 +219,16 @@ public class MainActivity extends  AppCompatActivity{
             tv.setText(tabTitles[position]);
             return tab;
         }
+    }
+    public List<ResultModel> getPopularResult() {
+        return PopularResult;
+    }
+
+    public List<ResultModel> getTopRateResult() {
+        return TopRateResult;
+    }
+
+    public List<ResultModel> getFavourit() {
+        return Favourit;
     }
 }
