@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Moves</string>
     <string name="action_settings">Setting</string>
+    <string name="pref_show_label" translatable="false">Show Bass</string>
+    <string name="pref_show_key" translatable="false">Show_Bass</string>
+    <string name="Hidden">Hidden</string>
+    <string name="Popular">Popular</string>
+    <string name="TopRate">TopRate</string>
+    <string name="Favourit">Favourit</string>
+
 </resources>

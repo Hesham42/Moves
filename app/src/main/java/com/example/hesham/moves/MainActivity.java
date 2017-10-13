@@ -1,25 +1,26 @@
 package com.example.hesham.moves;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.hesham.moves.Utilities.InternetConnection;
-import com.example.hesham.moves.adapter.adapterOfallMoves.MoviesAdapter;
-import com.example.hesham.moves.adapter.RecyclerTouchListener;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 import com.example.hesham.moves.Utilities.MoviesAPI;
+import com.example.hesham.moves.page.BlankFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,88 +31,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private MoviesAdapter adapter;
-    GridLayoutManager gridLayoutManager;
+public class MainActivity extends  AppCompatActivity{
 
 
 
-    MoviesAPI moviesAPI;
-    MovesModel model;
-    List<ResultModel> resultModels = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = (RecyclerView) findViewById(R.id.rec);
-        recyclerView.setHasFixedSize(true);
-        gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
-        recyclerView.setLayoutManager(gridLayoutManager);
-
-        if (InternetConnection.checkConnection(MainActivity.this)) {
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(MoviesAPI.BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            moviesAPI = retrofit.create(MoviesAPI.class);
-
-
-            Call<MovesModel> reCall = moviesAPI.getAllMoves();
-            reCall.enqueue(new Callback<MovesModel>() {
-                @Override
-                public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
-                    if (response.isSuccessful()) {
-                        model = response.body();
-                        Log.d("Guinness", model.toString());
-
-                        resultModels = model.getResults();
-                        Log.d("Guinness", response.toString());
-
-                        adapter = new MoviesAdapter(resultModels, MainActivity.this);
-                        recyclerView.setAdapter(adapter);
-                    }else
-                    {
-                        Log.d("Guinness"," the respons code of Main "+response.code());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<MovesModel> call, Throwable t) {
-                    Log.d("Guinness", "Respons get onFailure");
-
-                }
-            });
-            recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(),
-                    recyclerView, new RecyclerTouchListener.ClickListener() {
-
-                @Override
-                public void onClick(View view, int position) {
-//             Log.d("Guinness",resultModels.get(position).getId().toString());
-
-
-                    Intent i = new Intent(MainActivity.this,Details.class);
-                    ResultModel model=resultModels.get(position);
-                    i.putExtra("sampleObject",model);
-                    startActivity(i);
-
-
-                }
-
-                @Override
-                public void onLongClick(View view, int position) {
-
-                }
-            }));
-
-
-        }else
-        {
-            Toast.makeText(this,"there is no internet",Toast.LENGTH_LONG).show();
-
-        }
+        init();
 
 
     }
@@ -119,31 +47,89 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    private void init() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), MainActivity.this);
+        viewPager.setAdapter(pagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+
+        for(int i = 0; i < tabLayout.getTabCount(); i++){
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            tab.setCustomView(pagerAdapter.getTabView(i));
+        }
+    }
+
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+    public void onResume() { super.onResume();}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+    public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent= new Intent(this ,SettingActivitty.class);
-            startActivity(intent);
+        if(id == R.id.Favourit){
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+
     }
 
 
+    class PagerAdapter extends FragmentPagerAdapter {
 
+        String tabTitles[] = new String[]{"Popular", "Favourit", "TopRate"};
+        Context context;
+
+        public PagerAdapter(FragmentManager fm, Context context) {
+            super(fm);
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return tabTitles.length;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            switch (position) {
+                case 0:
+                    return new BlankFragment("Pouplar");
+                case 1:
+                    return new BlankFragment("TopRate");
+                case 2:
+                    return new BlankFragment("Favourit");
+                default:
+                    return null;
+            }
+            }
+
+
+
+        @Override
+        public CharSequence getPageTitle(int position){
+            return tabTitles[position];
+        }
+
+        public View getTabView(int position){
+            View tab = LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_tab, null);
+            TextView tv = (TextView) tab.findViewById(R.id.custom_text);
+            tv.setText(tabTitles[position]);
+            return tab;
+        }
+    }
 }

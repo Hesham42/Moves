@@ -19,7 +19,9 @@ public interface MoviesAPI {
 
 
     @GET("/3/movie/popular?api_key=28f81313599c7074d6380330fe1dca22")
-    Call<MovesModel> getAllMoves();
+    Call<MovesModel> getAllMovesPopular();
+    @GET("/3/movie/top_rated?api_key=28f81313599c7074d6380330fe1dca22")
+    Call<MovesModel> getAllMovestop_rated();
     @GET("/3/movie/{id}/videos?api_key=28f81313599c7074d6380330fe1dca22")
     Call<Trial> selectedVedio(@Path("id") int id);
     @GET("/3/movie/{id}/Reviews?api_key=28f81313599c7074d6380330fe1dca22")
