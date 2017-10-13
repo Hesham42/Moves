@@ -29,16 +29,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity
-            android:name=".setting.SettingActivitty"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
         <activity android:name=".page.Popular" />
         <activity android:name=".page.TopRate" />
-        <activity android:name=".page.Favourit"></activity>
+        <activity android:name=".page.Favourit">
+
+        </activity>
     </application>
 
 </manifest>

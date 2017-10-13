@@ -48,7 +48,7 @@ public class Favourit extends Fragment {
         View rootView = inflater.inflate(R.layout.favourit, container, false);
 
         MainActivity activity=(MainActivity)getActivity();
-        this.Favourit=activity.getTopRateResult();
+        this.Favourit=activity.getFavourit();
 
         RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_favourit);
 

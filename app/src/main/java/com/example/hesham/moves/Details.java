@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -38,6 +39,8 @@ public class Details extends AppCompatActivity {
     TextView Title, data, Time, Rate, Dec, Revo;
     RecyclerView recyclerView;
     RecyclerAdapter adapter;
+    Toolbar toolbar;
+
 
 
     MoviesAPI moviesAPI;
@@ -51,6 +54,10 @@ public class Details extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+        toolbar = (Toolbar) findViewById(R.id.toolbarDetails);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         ActionBar actionBar = this.getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

@@ -47,18 +47,17 @@ public class MainActivity extends AppCompatActivity {
     List<ResultModel> PopularResult = new ArrayList<>();
     List<ResultModel> TopRateResult = new ArrayList<>();
     List<ResultModel> Favourit = new ArrayList<>();
-    int i=0;
-
-
+    public static final String API_KEY = BuildConfig.API_KEY;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // TODO: 10/13/2017  search about semaphore or Mutex excution and remove sleep
         CallApi();
         init();
-
+        Log.e("Guinness", "API KEY " +API_KEY);
 
 
     }
@@ -85,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
                     if (response.isSuccessful()) {
                         PoplarModel = response.body();
-                        Log.e("Guinness", "p main"+PoplarModel.toString());
+                        Log.e("Guinness", "p main" + PoplarModel.toString());
 
                         PopularResult = PoplarModel.getResults();
 //                        Log.e("Guinness", response.toString());
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
                     if (response.isSuccessful()) {
                         TopRateModel = response.body();
-                        Log.e("Guinness", "top "+TopRateModel.toString());
+                        Log.e("Guinness", "top " + TopRateModel.toString());
 
                         TopRateResult = TopRateModel.getResults();
 //                        Log.d("Guinness", response.toString());
@@ -145,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
-        Log.e("Guiness",String.valueOf(tabLayout.getTabCount()));
+        Log.e("Guiness", String.valueOf(tabLayout.getTabCount()));
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             tab = tabLayout.getTabAt(i);
             tab.setCustomView(pagerAdapter.getTabView(i));
@@ -203,25 +202,22 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            Fragment fragment= null;
-            if (position ==0) {
+            Fragment fragment = null;
+            if (position == 0) {
 
-                fragment=new Popular();
-                Log.e("Guinness" , "to popular page");
+                fragment = new Popular();
+                Log.e("Guinness", "to popular page");
 //                return fragment;
 
-            }
-            else if (position == 1)
-            {
+            } else if (position == 1) {
 
-                fragment=new Popular();
-                Log.e("Guinness" , "to favorit page");
+                fragment = new Favourit();
+                Log.e("Guinness", "to favorit page");
 
 //                return fragment;
-            }
-            else if (position==2){
-                fragment=new TopRate();
-                Log.e("Guinness" , "to toprate page");
+            } else if (position == 2) {
+                fragment = new TopRate();
+                Log.e("Guinness", "to toprate page");
 
 //                return fragment;
             }
@@ -253,9 +249,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public List<ResultModel> getFavourit() {
-        return TopRateResult;
+        return Favourit;
     }
-
 
 
 }
