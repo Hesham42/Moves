@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
+
+
+
         CallApi();
 
     }
