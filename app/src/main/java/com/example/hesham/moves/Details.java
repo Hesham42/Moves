@@ -1,6 +1,7 @@
 package com.example.hesham.moves;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,12 +34,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.hesham.moves.MainActivity.API_KEY;
+
 public class Details extends AppCompatActivity {
     ResultModel model;
     ImageView img;
     TextView Title, data, Time, Rate, Dec;
-//    RecyclerView recyclerView;
-//    RecyclerAdapter adapter;
+    RecyclerView recyclerView;
+    RecyclerAdapter adapter;
+    int flag=0;
 
     MoviesAPI moviesAPI;
     Trial trial;
@@ -59,12 +65,12 @@ public class Details extends AppCompatActivity {
         Rate = (TextView) findViewById(R.id.Rate);
         Dec = (TextView) findViewById(R.id.Desc);
         img=(ImageView)findViewById(R.id.ImageOfResutl);
-//        recyclerView = (RecyclerView) findViewById(R.id.DetailsRec);
-//        recyclerView.setHasFixedSize(true);
-//        //to use RecycleView, you need a layout manager. default is LinearLayoutManager
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-//        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView = (RecyclerView) findViewById(R.id.DetailsRec);
+        recyclerView.setHasFixedSize(true);
+        //to use RecycleView, you need a layout manager. default is LinearLayoutManager
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         if (InternetConnection.checkConnection(getApplicationContext())) {
             Retrofit retrofit = new Retrofit.Builder()
@@ -82,44 +88,43 @@ public class Details extends AppCompatActivity {
                 data.setText(model.getReleaseDate());
                 Rate.setText(model.getVoteAverage()+"/10");
 
+                Call<Trial> reCall = moviesAPI.selectedVedio(model.getId(),API_KEY);
+                reCall.enqueue(new Callback<Trial>() {
+                    @Override
+                    public void onResponse(Call<Trial> call, Response<Trial> response) {
+                        trial= response.body();
+                        resultTrials= trial.getResults();
+                        for (int i=0;i<resultTrials.size();i++) {
+                            Log.d("Guinness", resultTrials.get(i).getKey());
+                            Keys.add(resultTrials.get(i).getKey());
+                            TrialName.add(resultTrials.get(i).getName());
 
-//                Call<Trial> reCall = moviesAPI.selectedVedio(model.getId());
-//                reCall.enqueue(new Callback<Trial>() {
-//                    @Override
-//                    public void onResponse(Call<Trial> call, Response<Trial> response) {
-//                        trial= response.body();
-//                        resultTrials= trial.getResults();
-//                        for (int i=0;i<resultTrials.size();i++) {
-//                            Log.d("Guinness", resultTrials.get(i).getKey());
-//                            Keys.add(resultTrials.get(i).getKey());
-//                            TrialName.add(resultTrials.get(i).getName());
-//
-//                        }
-////                        adapter = new RecyclerAdapter(Details.this,Keys,TrialName);
-////                        recyclerView.setAdapter(adapter);
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<Trial> call, Throwable t) {
-//
-//                    }
-//                });
-//
-//
-//
-//
-//
-//            }else
-//            {
-//                Toast.makeText(this,"there is no internet",Toast.LENGTH_LONG).show();
-//
-//            }
+                        }
+                        adapter = new RecyclerAdapter(Details.this,Keys,TrialName);
+                        recyclerView.setAdapter(adapter);
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Trial> call, Throwable t) {
+
+                    }
+                });
+
+
+
+
+
+            }else
+            {
+                Toast.makeText(this,"there is no internet",Toast.LENGTH_LONG).show();
+
+            }
 
 
         }
     }
-    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -130,6 +135,33 @@ public class Details extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
 
+
+    }
+
+    public void OnFavourit(View view) {
+        if (flag==0){
+
+            SharedPreferences.Editor editor =getSharedPreferences("com.example.hesham.moves.Details",MODE_PRIVATE).edit();
+            editor.putBoolean("Favourit Added",true);
+            editor.commit();
+            SaveFavourit();
+            flag=1;
+            Toast.makeText(this,"Added To Favourit",Toast.LENGTH_LONG).show();
+        }
+        if (flag==1)
+        {
+            SharedPreferences.Editor editor=getSharedPreferences("com.example.hesham.moves.Details",MODE_PRIVATE).edit();
+            editor.putBoolean( "Favourit Removed",true);
+            editor.commit();
+            flag=0;
+            Toast.makeText(this,"Remove To Favourit",Toast.LENGTH_LONG).show();
+
+
+        }
+
+    }
+
+    private void SaveFavourit() {
 
     }
 }

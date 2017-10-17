@@ -10,6 +10,7 @@ import com.example.hesham.moves.model.modelreviews.Reviews;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 import static com.example.hesham.moves.MainActivity.API_KEY;
 
@@ -20,15 +21,15 @@ import static com.example.hesham.moves.MainActivity.API_KEY;
 
 
 public interface MoviesAPI {
-    String BASE_URL = "http://api.themoviedb.org";
+    String BASE_URL = "http://api.themoviedb.org/3/";
 
-    @GET("/3/movie/popular?api_key="+API_KEY)
-    Call<MovesModel> getAllMovesPopular();
-    @GET("/3/movie/top_rated?api_key="+API_KEY)
-    Call<MovesModel> getAllMovestop_rated();
-    @GET("/3/movie/{id}/videos?api_key="+API_KEY)
-    Call<Trial> selectedVedio(@Path("id") int id);
-    @GET("/3/movie/{id}/Reviews?api_key="+API_KEY)
-    Call<Reviews> selectedReviews(@Path("id") int id);
+    @GET("movie/popular")
+    Call<MovesModel> getAllMovesPopular(@Query("api_key") String APIKEY);
+    @GET("movie/top_rated")
+    Call<MovesModel> getAllMovestop_rated(@Query("api_key") String APIKEY);
+    @GET("movie/{id}/videos")
+    Call<Trial> selectedVedio(@Path("id") int id,@Query("api_key") String APIKEY);
+    @GET("movie/{id}/Reviews")
+    Call<Reviews> selectedReviews(@Path("id") int id,@Query("api_key") String APIKEY);
 
 }

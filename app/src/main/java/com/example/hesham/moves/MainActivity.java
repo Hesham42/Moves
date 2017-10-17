@@ -39,22 +39,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
+
     private MoviesAdapter adapter;
     GridLayoutManager gridLayoutManager;
-
-
     MoviesAPI moviesAPI;
+
+
     MovesModel PoplarModel;
     MovesModel TopRateModel;
-
     List<ResultModel> PopularResult = new ArrayList<>();
+
     List<ResultModel> TopRateResult = new ArrayList<>();
     List<ResultModel> Favourit = new ArrayList<>();
     int flag=0;
     public static final String API_KEY = BuildConfig.API_KEY;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     private  void CallApi() {
         if (InternetConnection.checkConnection(MainActivity.this)) {
 
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             moviesAPI = retrofit.create(MoviesAPI.class);
 
 
-            Call<MovesModel> PopularRecall = moviesAPI.getAllMovesPopular();
+            Call<MovesModel> PopularRecall = moviesAPI.getAllMovesPopular(API_KEY);
             PopularRecall.enqueue(new Callback<MovesModel>() {
                 @Override
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            final Call<MovesModel> TopRate = moviesAPI.getAllMovestop_rated();
+            final Call<MovesModel> TopRate = moviesAPI.getAllMovestop_rated(API_KEY);
             TopRate.enqueue(new Callback<MovesModel>() {
                 @Override
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
@@ -179,12 +178,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     public void onResume() {
         super.onResume();
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -221,13 +221,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
-
     public List<ResultModel> getPopularResult() {
         return PopularResult;
     }
+
+
+
+
 
     public List<ResultModel> getTopRateResult() {
         return TopRateResult;
@@ -236,6 +236,8 @@ public class MainActivity extends AppCompatActivity {
     public List<ResultModel> getFavourit() {
         return Favourit;
     }
+
+
 
 
 }
