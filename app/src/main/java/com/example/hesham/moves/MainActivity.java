@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<MovesModel> call, Throwable t) {
+
 //                    Log.d("Guinness", "Respons get onFailure TopRate");
 
                 }
