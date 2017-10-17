@@ -142,14 +142,14 @@ public class MainActivity extends AppCompatActivity {
                     if (flag==1){
 
                         Intent i = new Intent(MainActivity.this,Details.class);
-                        ResultModel model=PopularResult.get(position);
+                        ResultModel model=getPopularResult().get(position);
                         i.putExtra("sampleObject",model);
                         startActivity(i);
 
                     }else if (flag==2){
 
                         Intent i = new Intent(MainActivity.this,Details.class);
-                        ResultModel model=TopRateResult.get(position);
+                        ResultModel model=getTopRateResult().get(position);
                         i.putExtra("sampleObject",model);
                         startActivity(i);
 
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     else if (flag==3)
                     {
                         Intent i = new Intent(MainActivity.this,Details.class);
-                        ResultModel model=TopRateResult.get(position);
+                        ResultModel model=getFavourit().get(position);
                         i.putExtra("sampleObject",model);
                         startActivity(i);
 
