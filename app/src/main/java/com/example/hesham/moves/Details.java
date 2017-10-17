@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.example.hesham.moves.Utilities.InternetConnection;
 import com.example.hesham.moves.Utilities.MoviesAPI;
-import com.example.hesham.moves.adapter.AdapterOfTriall.RecyclerAdapter;
 import com.example.hesham.moves.model.modelVedio.ResultTrial;
 import com.example.hesham.moves.model.modelVedio.Trial;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;

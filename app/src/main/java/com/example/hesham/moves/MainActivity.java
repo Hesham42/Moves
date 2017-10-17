@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
                     if (response.isSuccessful()) {
                         PoplarModel = response.body();
-                        Log.e("Guinness", "p main" + PoplarModel.toString());
+//                        Log.e("Guinness", "p main" + PoplarModel.toString());
 
                         PopularResult = PoplarModel.getResults();
 //                      Log.e("Guinness", response.toString());
@@ -98,13 +98,13 @@ public class MainActivity extends AppCompatActivity {
 
 
                     } else {
-                        Log.d("Guinness", " the respons code of popular " + response.code());
+//                        Log.d("Guinness", " the respons code of popular " + response.code());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<MovesModel> call, Throwable t) {
-                    Log.d("Guinness", "Respons get onFailure popular");
+//                    Log.d("Guinness", "Respons get onFailure popular");
 
                 }
             });
@@ -118,12 +118,12 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
                     if (response.isSuccessful()) {
                         TopRateModel = response.body();
-                        Log.e("Guinness", "top " + TopRateModel.toString());
+//                        Log.e("Guinness", "top " + TopRateModel.toString());
 
                         TopRateResult = TopRateModel.getResults();
 //                        Log.d("Guinness", response.toString());
                     } else {
-                        Log.d("Guinness", " the respons code of TopRate " + response.code());
+//                        Log.d("Guinness", " the respons code of TopRate " + response.code());
 
                     }
 
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<MovesModel> call, Throwable t) {
-                    Log.d("Guinness", "Respons get onFailure TopRate");
+//                    Log.d("Guinness", "Respons get onFailure TopRate");
 
                 }
             });
