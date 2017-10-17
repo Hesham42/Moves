@@ -14,7 +14,7 @@ public class FavouriteContract {
         public static final String COLUMN_TITILE = "title";
         public static final String COLUMN_USERRATING = "userrating";
         public static final String COLUMN_POSTPATH = "postpath";
-        public static final String COLUMN_PLOT_SYNOPSIS = "overview";
+        public static final String COLUMN_Overview = "overview";
 
 
 

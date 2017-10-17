@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.hesham.moves.Utilities.InternetConnection;
 import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.adapter.AdapterOfTriall.RecyclerAdapter;
+import com.example.hesham.moves.data.FavouritDbHelper;
 import com.example.hesham.moves.model.modelVedio.ResultTrial;
 import com.example.hesham.moves.model.modelVedio.Trial;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
@@ -43,13 +44,16 @@ public class Details extends AppCompatActivity {
     TextView Title, data, Time, Rate, Dec;
     RecyclerView recyclerView;
     RecyclerAdapter adapter;
-    int flag=0;
+    private FavouritDbHelper favouritDbHelper;
+
+    int flag = 0;
 
     MoviesAPI moviesAPI;
     Trial trial;
-    List<ResultTrial> resultTrials= new ArrayList<>();
-    List<String> Keys= new ArrayList<>();
-    List<String> TrialName=new ArrayList<>();
+    List<ResultTrial> resultTrials = new ArrayList<>();
+    List<String> Keys = new ArrayList<>();
+    List<String> TrialName = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,10 +65,9 @@ public class Details extends AppCompatActivity {
 
         Title = (TextView) findViewById(R.id.TitleTex);
         data = (TextView) findViewById(R.id.HistroyTitile);
-        Time = (TextView) findViewById(R.id.Houre);
         Rate = (TextView) findViewById(R.id.Rate);
         Dec = (TextView) findViewById(R.id.Desc);
-        img=(ImageView)findViewById(R.id.ImageOfResutl);
+        img = (ImageView) findViewById(R.id.ImageOfResutl);
         recyclerView = (RecyclerView) findViewById(R.id.DetailsRec);
         recyclerView.setHasFixedSize(true);
         //to use RecycleView, you need a layout manager. default is LinearLayoutManager
@@ -86,21 +89,21 @@ public class Details extends AppCompatActivity {
                 Dec.setText(model.getOverview());
                 Picasso.with(Details.this).load("http://image.tmdb.org/t/p/w185/" + model.getPosterPath()).into(img);
                 data.setText(model.getReleaseDate());
-                Rate.setText(model.getVoteAverage()+"/10");
+                Rate.setText(model.getVoteAverage() + "/10");
 
-                Call<Trial> reCall = moviesAPI.selectedVedio(model.getId(),API_KEY);
+                Call<Trial> reCall = moviesAPI.selectedVedio(model.getId(), API_KEY);
                 reCall.enqueue(new Callback<Trial>() {
                     @Override
                     public void onResponse(Call<Trial> call, Response<Trial> response) {
-                        trial= response.body();
-                        resultTrials= trial.getResults();
-                        for (int i=0;i<resultTrials.size();i++) {
+                        trial = response.body();
+                        resultTrials = trial.getResults();
+                        for (int i = 0; i < resultTrials.size(); i++) {
                             Log.d("Guinness", resultTrials.get(i).getKey());
                             Keys.add(resultTrials.get(i).getKey());
                             TrialName.add(resultTrials.get(i).getName());
 
                         }
-                        adapter = new RecyclerAdapter(Details.this,Keys,TrialName);
+                        adapter = new RecyclerAdapter(Details.this, Keys, TrialName);
                         recyclerView.setAdapter(adapter);
 
                     }
@@ -112,12 +115,8 @@ public class Details extends AppCompatActivity {
                 });
 
 
-
-
-
-            }else
-            {
-                Toast.makeText(this,"there is no internet",Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "there is no internet", Toast.LENGTH_LONG).show();
 
             }
 
@@ -129,8 +128,7 @@ public class Details extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        if (id ==android.R.id.home)
-        {
+        if (id == android.R.id.home) {
             NavUtils.navigateUpFromSameTask(this);
         }
         return super.onOptionsItemSelected(item);
@@ -139,22 +137,22 @@ public class Details extends AppCompatActivity {
     }
 
     public void OnFavourit(View view) {
-        if (flag==0){
-
-            SharedPreferences.Editor editor =getSharedPreferences("com.example.hesham.moves.Details",MODE_PRIVATE).edit();
-            editor.putBoolean("Favourit Added",true);
+        if (flag == 0) {
+            SharedPreferences.Editor editor = getSharedPreferences("com.example.hesham.moves.Details", MODE_PRIVATE).edit();
+            editor.putBoolean("Favourit Added", true);
             editor.commit();
             SaveFavourit();
-            flag=1;
-            Toast.makeText(this,"Added To Favourit",Toast.LENGTH_LONG).show();
+            flag = 1;
+            Toast.makeText(this, "Added To Favourit", Toast.LENGTH_LONG).show();
         }
-        if (flag==1)
-        {
-            SharedPreferences.Editor editor=getSharedPreferences("com.example.hesham.moves.Details",MODE_PRIVATE).edit();
-            editor.putBoolean( "Favourit Removed",true);
+        if (flag == 1) {
+            favouritDbHelper= new FavouritDbHelper(this);
+            favouritDbHelper.deletedFavourit(model.getId());
+            SharedPreferences.Editor editor = getSharedPreferences("com.example.hesham.moves.Details", MODE_PRIVATE).edit();
+            editor.putBoolean("Favourit Removed", true);
             editor.commit();
-            flag=0;
-            Toast.makeText(this,"Remove To Favourit",Toast.LENGTH_LONG).show();
+            flag = 0;
+            Toast.makeText(this, "Remove To Favourit", Toast.LENGTH_LONG).show();
 
 
         }
@@ -162,6 +160,8 @@ public class Details extends AppCompatActivity {
     }
 
     private void SaveFavourit() {
+        favouritDbHelper = new FavouritDbHelper(this);
+        favouritDbHelper.addFavorie(model);
 
     }
 }

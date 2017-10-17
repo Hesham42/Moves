@@ -24,6 +24,7 @@ import com.example.hesham.moves.Utilities.InternetConnection;
 import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.adapter.AdapterOFAllMovies.MoviesAdapter;
 import com.example.hesham.moves.adapter.RecyclerTouchListener;
+import com.example.hesham.moves.data.FavouritDbHelper;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private MoviesAdapter adapter;
     GridLayoutManager gridLayoutManager;
     MoviesAPI moviesAPI;
+    private FavouritDbHelper favouritDbHelper;
 
 
     MovesModel PoplarModel;
@@ -51,8 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
     List<ResultModel> TopRateResult = new ArrayList<>();
     List<ResultModel> Favourit = new ArrayList<>();
-    int flag=0;
+    int flag = 0;
     public static final String API_KEY = BuildConfig.API_KEY;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +69,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    private  void CallApi() {
+    private void CallApi() {
         if (InternetConnection.checkConnection(MainActivity.this)) {
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
                         PopularResult = PoplarModel.getResults();
 //                      Log.e("Guinness", response.toString());
-                        flag=1;
+                        flag = 1;
                         adapter = new MoviesAdapter(PopularResult, MainActivity.this);
                         recyclerView.setAdapter(adapter);
 
@@ -104,8 +106,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-
-
 
 
             final Call<MovesModel> TopRate = moviesAPI.getAllMovestop_rated(API_KEY);
@@ -138,26 +138,24 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view, int position) {
 //             Log.d("Guinness",resultModels.get(position).getId().toString());
-                    if (flag==1){
+                    if (flag == 1) {
 
-                        Intent i = new Intent(MainActivity.this,Details.class);
-                        ResultModel model=getPopularResult().get(position);
-                        i.putExtra("sampleObject",model);
+                        Intent i = new Intent(MainActivity.this, Details.class);
+                        ResultModel model = getPopularResult().get(position);
+                        i.putExtra("sampleObject", model);
                         startActivity(i);
 
-                    }else if (flag==2){
+                    } else if (flag == 2) {
 
-                        Intent i = new Intent(MainActivity.this,Details.class);
-                        ResultModel model=getTopRateResult().get(position);
-                        i.putExtra("sampleObject",model);
+                        Intent i = new Intent(MainActivity.this, Details.class);
+                        ResultModel model = getTopRateResult().get(position);
+                        i.putExtra("sampleObject", model);
                         startActivity(i);
 
-                    }
-                    else if (flag==3)
-                    {
-                        Intent i = new Intent(MainActivity.this,Details.class);
-                        ResultModel model=getFavourit().get(position);
-                        i.putExtra("sampleObject",model);
+                    } else if (flag == 3) {
+                        Intent i = new Intent(MainActivity.this, Details.class);
+                        ResultModel model = getFavourit().get(position);
+                        i.putExtra("sampleObject", model);
                         startActivity(i);
 
                     }
@@ -174,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
     }
 
 
@@ -182,8 +179,6 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
     }
-
-
 
 
     @Override
@@ -198,22 +193,23 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.Pouplar) {
-            flag=1;
+            flag = 1;
             adapter = new MoviesAdapter(getPopularResult(), MainActivity.this);
             recyclerView.setAdapter(adapter);
-
+            adapter.notifyDataSetChanged();
         }
         if (id == R.id.Favourit) {
-            flag=3;
+            flag = 3;
             adapter = new MoviesAdapter(getFavourit(), MainActivity.this);
             recyclerView.setAdapter(adapter);
-
+            adapter.notifyDataSetChanged();
 
         }
         if (id == R.id.TopRate) {
-            flag=2;
+            flag = 2;
             adapter = new MoviesAdapter(getTopRateResult(), MainActivity.this);
             recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
 
         }
 
@@ -226,18 +222,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-
     public List<ResultModel> getTopRateResult() {
         return TopRateResult;
     }
 
     public List<ResultModel> getFavourit() {
+        favouritDbHelper = new FavouritDbHelper(this);
+        Favourit = favouritDbHelper.getAllFavourit();
         return Favourit;
     }
-
-
 
 
 }
