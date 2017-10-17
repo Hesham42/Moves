@@ -39,10 +39,6 @@ public class Details extends AppCompatActivity {
     TextView Title, data, Time, Rate, Dec, Revo;
     RecyclerView recyclerView;
     RecyclerAdapter adapter;
-    Toolbar toolbar;
-
-
-
     MoviesAPI moviesAPI;
     Trial trial;
     Reviews reviews;
@@ -54,14 +50,6 @@ public class Details extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        toolbar = (Toolbar) findViewById(R.id.toolbarDetails);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        ActionBar actionBar = this.getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
 
         Title = (TextView) findViewById(R.id.TitleTex);
         data = (TextView) findViewById(R.id.HistroyTitile);
@@ -107,8 +95,8 @@ public class Details extends AppCompatActivity {
                             TrialName.add(resultTrials.get(i).getName());
 
                         }
-//                        adapter = new RecyclerAdapter(Details.this,Keys,TrialName);
-//                        recyclerView.setAdapter(adapter);
+                        adapter = new RecyclerAdapter(Details.this,Keys,TrialName);
+                        recyclerView.setAdapter(adapter);
 
                     }
 
@@ -124,28 +112,28 @@ public class Details extends AppCompatActivity {
 
             }
 
-//            Call<Reviews> reCallRevo = moviesAPI.selectedReviews(PoplarModel.getId());
-//            reCallRevo.enqueue(new Callback<Reviews>() {
-//                @Override
-//                public void onResponse(Call<Reviews> call, Response<Reviews> response) {
-//
-//                    reviews = response.body();
-//                    Log.d("Guinness",reviews.getPage().toString());
-//
-////                    List<Resultreviews> resultreviews = reviews.getResults();
-////                    for (int i = 0; i < resultreviews.size(); i++) {
-////                        List<String> strings = new ArrayList<String>();
-////                        strings.add(resultreviews.get(i).getContent());
-////                    }
-//
-//
-//                }
-//
-//                @Override
-//                public void onFailure(Call<Reviews> call, Throwable t) {
-//                    Log.d("Guinness", "Failed in reviews ");
-//                }
-//            });
+            Call<Reviews> reCallRevo = moviesAPI.selectedReviews(model.getId());
+            reCallRevo.enqueue(new Callback<Reviews>() {
+                @Override
+                public void onResponse(Call<Reviews> call, Response<Reviews> response) {
+
+                    reviews = response.body();
+                    Log.d("Guinness",reviews.getPage().toString());
+
+                    List<Resultreviews> resultreviews = reviews.getResults();
+//                    for (int i = 0; i < resultreviews.size(); i++) {
+//                        List<String> strings = new ArrayList<String>();
+//                        strings.add(resultreviews.get(i).getContent());
+//                    }
+
+
+                }
+
+                @Override
+                public void onFailure(Call<Reviews> call, Throwable t) {
+                    Log.d("Guinness", "Failed in reviews ");
+                }
+            });
 
         }
     }

@@ -1,7 +1,7 @@
 package com.example.hesham.moves;
 
 import android.content.Context;
-import android.os.SystemClock;
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,17 +18,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hesham.moves.Utilities.InternetConnection;
 import com.example.hesham.moves.Utilities.MoviesAPI;
+import com.example.hesham.moves.adapter.AdapterOFAllMovies.MoviesAdapter;
+import com.example.hesham.moves.adapter.RecyclerTouchListener;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
-import com.example.hesham.moves.page.Favourit;
-import com.example.hesham.moves.page.Popular;
-import com.example.hesham.moves.page.TopRate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,39 +38,37 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
+    private RecyclerView recyclerView;
+    private MoviesAdapter adapter;
+    GridLayoutManager gridLayoutManager;
+
+
     MoviesAPI moviesAPI;
     MovesModel PoplarModel;
     MovesModel TopRateModel;
 
-    Toolbar toolbar;
-    PagerAdapter pagerAdapter;
-    ViewPager viewPager;
-    TabLayout tabLayout;
-    TabLayout.Tab tab;
     List<ResultModel> PopularResult = new ArrayList<>();
     List<ResultModel> TopRateResult = new ArrayList<>();
     List<ResultModel> Favourit = new ArrayList<>();
+    int flag=0;
     public static final String API_KEY = BuildConfig.API_KEY;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // TODO: 10/13/2017  search about semaphore or Mutex excution and remove sleep
+        recyclerView = (RecyclerView) findViewById(R.id.rec);
+        recyclerView.setHasFixedSize(true);
+        gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+        recyclerView.setLayoutManager(gridLayoutManager);
         CallApi();
-        init();
-        Log.e("Guinness", "API KEY " +API_KEY);
-
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
-    private void CallApi() {
+    private  void CallApi() {
         if (InternetConnection.checkConnection(MainActivity.this)) {
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -87,7 +88,11 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Guinness", "p main" + PoplarModel.toString());
 
                         PopularResult = PoplarModel.getResults();
-//                        Log.e("Guinness", response.toString());
+//                      Log.e("Guinness", response.toString());
+                        flag=1;
+                        adapter = new MoviesAdapter(PopularResult, MainActivity.this);
+                        recyclerView.setAdapter(adapter);
+
 
                     } else {
                         Log.d("Guinness", " the respons code of popular " + response.code());
@@ -102,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
-            Call<MovesModel> TopRate = moviesAPI.getAllMovestop_rated();
+
+
+            final Call<MovesModel> TopRate = moviesAPI.getAllMovestop_rated();
             TopRate.enqueue(new Callback<MovesModel>() {
                 @Override
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
@@ -112,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
                         TopRateResult = TopRateModel.getResults();
 //                        Log.d("Guinness", response.toString());
-
                     } else {
                         Log.d("Guinness", " the respons code of TopRate " + response.code());
 
@@ -126,31 +132,53 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
+
+            recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(),
+                    recyclerView, new RecyclerTouchListener.ClickListener() {
+
+                @Override
+                public void onClick(View view, int position) {
+//             Log.d("Guinness",resultModels.get(position).getId().toString());
+                    if (flag==1){
+
+                        Intent i = new Intent(MainActivity.this,Details.class);
+                        ResultModel model=PopularResult.get(position);
+                        i.putExtra("sampleObject",model);
+                        startActivity(i);
+
+                    }else if (flag==2){
+
+                        Intent i = new Intent(MainActivity.this,Details.class);
+                        ResultModel model=TopRateResult.get(position);
+                        i.putExtra("sampleObject",model);
+                        startActivity(i);
+
+                    }
+                    else if (flag==3)
+                    {
+                        Intent i = new Intent(MainActivity.this,Details.class);
+                        ResultModel model=TopRateResult.get(position);
+                        i.putExtra("sampleObject",model);
+                        startActivity(i);
+
+                    }
+
+
+                }
+
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+            }));
+
         }
+
+
+
     }
 
 
-    private void init() {
-        SystemClock.sleep(2000);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), MainActivity.this);
-        viewPager.setAdapter(pagerAdapter);
-
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
-        Log.e("Guiness", String.valueOf(tabLayout.getTabCount()));
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            tab = tabLayout.getTabAt(i);
-            tab.setCustomView(pagerAdapter.getTabView(i));
-        }
-
-    }
 
 
     @Override
@@ -170,14 +198,22 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.Pouplar) {
-            viewPager.setCurrentItem(0);
+            flag=1;
+            adapter = new MoviesAdapter(getPopularResult(), MainActivity.this);
+            recyclerView.setAdapter(adapter);
+
         }
         if (id == R.id.Favourit) {
-            viewPager.setCurrentItem(1);
+            flag=3;
+            adapter = new MoviesAdapter(getFavourit(), MainActivity.this);
+            recyclerView.setAdapter(adapter);
+
 
         }
         if (id == R.id.TopRate) {
-            viewPager.setCurrentItem(2);
+            flag=2;
+            adapter = new MoviesAdapter(getTopRateResult(), MainActivity.this);
+            recyclerView.setAdapter(adapter);
 
         }
 
@@ -186,59 +222,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    class PagerAdapter extends FragmentPagerAdapter {
-        String tabTitles[] = new String[]{"popular", "Favourit", "TopRate"};
-        Context context;
-
-        public PagerAdapter(FragmentManager fm, Context context) {
-            super(fm);
-            this.context = context;
-        }
-
-        @Override
-        public int getCount() {
-            return tabTitles.length;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            Fragment fragment = null;
-            if (position == 0) {
-
-                fragment = new Popular();
-                Log.e("Guinness", "to popular page");
-//                return fragment;
-
-            } else if (position == 1) {
-
-                fragment = new Favourit();
-                Log.e("Guinness", "to favorit page");
-
-//                return fragment;
-            } else if (position == 2) {
-                fragment = new TopRate();
-                Log.e("Guinness", "to toprate page");
-
-//                return fragment;
-            }
 
 
-            return fragment;
-        }
-
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return tabTitles[position];
-        }
-
-        public View getTabView(int position) {
-            View tab = LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_tab, null);
-            TextView tv = (TextView) tab.findViewById(R.id.custom_text);
-            tv.setText(tabTitles[position]);
-            return tab;
-        }
-    }
 
     public List<ResultModel> getPopularResult() {
         return PopularResult;
