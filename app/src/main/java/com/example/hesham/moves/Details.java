@@ -36,8 +36,8 @@ public class Details extends AppCompatActivity {
     ResultModel model;
     ImageView img;
     TextView Title, data, Time, Rate, Dec;
-    RecyclerView recyclerView;
-    RecyclerAdapter adapter;
+//    RecyclerView recyclerView;
+//    RecyclerAdapter adapter;
 
     MoviesAPI moviesAPI;
     Trial trial;
@@ -59,12 +59,12 @@ public class Details extends AppCompatActivity {
         Rate = (TextView) findViewById(R.id.Rate);
         Dec = (TextView) findViewById(R.id.Desc);
         img=(ImageView)findViewById(R.id.ImageOfResutl);
-        recyclerView = (RecyclerView) findViewById(R.id.DetailsRec);
-        recyclerView.setHasFixedSize(true);
-        //to use RecycleView, you need a layout manager. default is LinearLayoutManager
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
+//        recyclerView = (RecyclerView) findViewById(R.id.DetailsRec);
+//        recyclerView.setHasFixedSize(true);
+//        //to use RecycleView, you need a layout manager. default is LinearLayoutManager
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+//        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+//        recyclerView.setLayoutManager(linearLayoutManager);
 
         if (InternetConnection.checkConnection(getApplicationContext())) {
             Retrofit retrofit = new Retrofit.Builder()
@@ -83,41 +83,42 @@ public class Details extends AppCompatActivity {
                 Rate.setText(model.getVoteAverage()+"/10");
 
 
-                Call<Trial> reCall = moviesAPI.selectedVedio(model.getId());
-                reCall.enqueue(new Callback<Trial>() {
-                    @Override
-                    public void onResponse(Call<Trial> call, Response<Trial> response) {
-                        trial= response.body();
-                        resultTrials= trial.getResults();
-                        for (int i=0;i<resultTrials.size();i++) {
-                            Log.d("Guinness", resultTrials.get(i).getKey());
-                            Keys.add(resultTrials.get(i).getKey());
-                            TrialName.add(resultTrials.get(i).getName());
-
-                        }
-                        adapter = new RecyclerAdapter(Details.this,Keys,TrialName);
-                        recyclerView.setAdapter(adapter);
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<Trial> call, Throwable t) {
-
-                    }
-                });
-
-
-
-
-
-            }else
-            {
-                Toast.makeText(this,"there is no internet",Toast.LENGTH_LONG).show();
-
-            }
+//                Call<Trial> reCall = moviesAPI.selectedVedio(model.getId());
+//                reCall.enqueue(new Callback<Trial>() {
+//                    @Override
+//                    public void onResponse(Call<Trial> call, Response<Trial> response) {
+//                        trial= response.body();
+//                        resultTrials= trial.getResults();
+//                        for (int i=0;i<resultTrials.size();i++) {
+//                            Log.d("Guinness", resultTrials.get(i).getKey());
+//                            Keys.add(resultTrials.get(i).getKey());
+//                            TrialName.add(resultTrials.get(i).getName());
+//
+//                        }
+////                        adapter = new RecyclerAdapter(Details.this,Keys,TrialName);
+////                        recyclerView.setAdapter(adapter);
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<Trial> call, Throwable t) {
+//
+//                    }
+//                });
+//
+//
+//
+//
+//
+//            }else
+//            {
+//                Toast.makeText(this,"there is no internet",Toast.LENGTH_LONG).show();
+//
+//            }
 
 
         }
+    }
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

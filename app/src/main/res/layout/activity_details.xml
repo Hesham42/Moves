@@ -93,24 +93,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Reviewer"
-            android:textSize="18dp"
-            />
-        <TextView
-            android:id="@+id/Reveo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+
 
     </LinearLayout>
 <View
     android:layout_width="match_parent"
     android:layout_height="4dp"
     android:background="#919191"/>
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/DetailsRec"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+<!--<android.support.v7.widget.RecyclerView-->
+    <!--android:id="@+id/DetailsRec"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"/>-->
 </LinearLayout>
