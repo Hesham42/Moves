@@ -45,8 +45,8 @@ public class Details extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerAdapter adapter;
     private FavouritDbHelper favouritDbHelper;
+    private final AppCompatActivity activity = Details.this;
 
-    int flag = 0;
 
     MoviesAPI moviesAPI;
     Trial trial;
@@ -137,30 +137,17 @@ public class Details extends AppCompatActivity {
     }
 
     public void OnFavourit(View view) {
-        if (flag == 0) {
-            SharedPreferences.Editor editor = getSharedPreferences("com.example.hesham.moves.Details", MODE_PRIVATE).edit();
-            editor.putBoolean("Favourit Added", true);
-            editor.commit();
-            SaveFavourit();
-            flag = 1;
-            Toast.makeText(this, "Added To Favourit", Toast.LENGTH_LONG).show();
-        }
-        if (flag == 1) {
-            favouritDbHelper= new FavouritDbHelper(this);
-            favouritDbHelper.deletedFavourit(model.getId());
-            SharedPreferences.Editor editor = getSharedPreferences("com.example.hesham.moves.Details", MODE_PRIVATE).edit();
-            editor.putBoolean("Favourit Removed", true);
-            editor.commit();
-            flag = 0;
-            Toast.makeText(this, "Remove To Favourit", Toast.LENGTH_LONG).show();
-
-
-        }
-
+        SharedPreferences.Editor editor = getSharedPreferences("com.example.hesham.moves.Details", MODE_PRIVATE).edit();
+        editor.putBoolean("Favourit Added", true);
+        editor.commit();
+        SaveFavourit();
+        Toast.makeText(this, "Added To Favourit", Toast.LENGTH_LONG).show();
     }
 
+
+
     private void SaveFavourit() {
-        favouritDbHelper = new FavouritDbHelper(this);
+        favouritDbHelper = new FavouritDbHelper(activity);
         favouritDbHelper.addFavorie(model);
 
     }

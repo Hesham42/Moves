@@ -2,6 +2,7 @@ package com.example.hesham.moves;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     GridLayoutManager gridLayoutManager;
     MoviesAPI moviesAPI;
     private FavouritDbHelper favouritDbHelper;
-
+    Button ButtonDeleted;
 
     MovesModel PoplarModel;
     MovesModel TopRateModel;
@@ -54,18 +56,30 @@ public class MainActivity extends AppCompatActivity {
     List<ResultModel> TopRateResult = new ArrayList<>();
     List<ResultModel> Favourit = new ArrayList<>();
     int flag = 0;
+    int Possion;
     public static final String API_KEY = BuildConfig.API_KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButtonDeleted=(Button) findViewById(R.id.DeletedButton);
         recyclerView = (RecyclerView) findViewById(R.id.rec);
         recyclerView.setHasFixedSize(true);
         gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
         CallApi();
 
+
+    }
+
+    private void onDeletedpostion(int id) {
+            favouritDbHelper= new FavouritDbHelper(this);
+            favouritDbHelper.deletedFavourit(id);
+            SharedPreferences.Editor editor = getSharedPreferences("com.example.hesham.moves.Details", MODE_PRIVATE).edit();
+            editor.putBoolean("Favourit Removed", true);
+            editor.commit();
+            Toast.makeText(this, "Remove To Favourit", Toast.LENGTH_LONG).show();
     }
 
 
@@ -139,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view, int position) {
 //             Log.d("Guinness",resultModels.get(position).getId().toString());
                     if (flag == 1) {
-
                         Intent i = new Intent(MainActivity.this, Details.class);
                         ResultModel model = getPopularResult().get(position);
                         i.putExtra("sampleObject", model);
@@ -194,11 +207,13 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.Pouplar) {
             flag = 1;
+            ButtonDeleted.setVisibility(View.GONE);
             adapter = new MoviesAdapter(getPopularResult(), MainActivity.this);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
         if (id == R.id.Favourit) {
+            ButtonDeleted.setVisibility(View.VISIBLE);
             flag = 3;
             adapter = new MoviesAdapter(getFavourit(), MainActivity.this);
             recyclerView.setAdapter(adapter);
@@ -206,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         if (id == R.id.TopRate) {
+            ButtonDeleted.setVisibility(View.GONE);
             flag = 2;
             adapter = new MoviesAdapter(getTopRateResult(), MainActivity.this);
             recyclerView.setAdapter(adapter);
@@ -231,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
         Favourit = favouritDbHelper.getAllFavourit();
         return Favourit;
     }
+
 
 
 }

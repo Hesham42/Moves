@@ -42,13 +42,13 @@ public class FavouritDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         final String SQL_CREATE_FAVORITE_TABLE = "CREATE TABLE " + FavouriteContract.FavoriteEntry.TABLE_NAME + " (" +
-                FavouriteContract.FavoriteEntry._ID + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                FavouriteContract.FavoriteEntry.COLUMN_MOVIEID + "INTEGER, " +
-                FavouriteContract.FavoriteEntry.COLUMN_TITILE + "TEXT NOT NULL, " +
-                FavouriteContract.FavoriteEntry.COLUMN_USERRATING + "REAL NOT NULL, " +
-                FavouriteContract.FavoriteEntry.COLUMN_POSTPATH + "TEXT NOT NULL, " +
-                FavouriteContract.FavoriteEntry.COLUMN_Overview + "TEXT NOT NULL, " + "); ";
-
+                FavouriteContract.FavoriteEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                FavouriteContract.FavoriteEntry.COLUMN_MOVIEID + " INTEGER, " +
+                FavouriteContract.FavoriteEntry.COLUMN_TITILE + " TEXT NOT NULL, " +
+                FavouriteContract.FavoriteEntry.COLUMN_USERRATING + " REAL NOT NULL, " +
+                FavouriteContract.FavoriteEntry.COLUMN_POSTPATH + " TEXT NOT NULL, " +
+                FavouriteContract.FavoriteEntry.COLUMN_OVERVIEW + " TEXT NOT NULL" +
+                "); ";
 
         sqLiteDatabase.execSQL(SQL_CREATE_FAVORITE_TABLE);
 
@@ -68,7 +68,7 @@ public class FavouritDbHelper extends SQLiteOpenHelper {
         values.put(FavouriteContract.FavoriteEntry.COLUMN_TITILE, model.getTitle());
         values.put(FavouriteContract.FavoriteEntry.COLUMN_USERRATING, model.getVoteAverage());
         values.put(FavouriteContract.FavoriteEntry.COLUMN_POSTPATH, model.getBackdropPath());
-        values.put(FavouriteContract.FavoriteEntry.COLUMN_Overview, model.getOverview());
+        values.put(FavouriteContract.FavoriteEntry.COLUMN_OVERVIEW, model.getOverview());
 
         db.insert(FavouriteContract.FavoriteEntry.TABLE_NAME, null, values);
         db.close();
@@ -77,7 +77,6 @@ public class FavouritDbHelper extends SQLiteOpenHelper {
     public void deletedFavourit(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(FavouriteContract.FavoriteEntry.TABLE_NAME, FavouriteContract.FavoriteEntry.COLUMN_MOVIEID + "=" + id, null);
-//        db.close();
     }
 
     public List<ResultModel> getAllFavourit() {
@@ -87,11 +86,14 @@ public class FavouritDbHelper extends SQLiteOpenHelper {
                 FavouriteContract.FavoriteEntry.COLUMN_TITILE,
                 FavouriteContract.FavoriteEntry.COLUMN_USERRATING,
                 FavouriteContract.FavoriteEntry.COLUMN_POSTPATH,
-                FavouriteContract.FavoriteEntry.COLUMN_Overview
+                FavouriteContract.FavoriteEntry.COLUMN_OVERVIEW
         };
-        String SortOdrder = FavouriteContract.FavoriteEntry._ID + "ASC";
+        String SortOdrder = FavouriteContract.FavoriteEntry._ID + " ASC";
+
         List<ResultModel> favouritList = new ArrayList<>();
+
         SQLiteDatabase db = this.getReadableDatabase();
+
         Cursor cursor = db.query(FavouriteContract.FavoriteEntry.TABLE_NAME,
                 columns,
                 null,
@@ -107,12 +109,13 @@ public class FavouritDbHelper extends SQLiteOpenHelper {
                 model.setOriginalTitle(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavoriteEntry.COLUMN_TITILE)));
                 model.setVoteAverage(Double.parseDouble(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavoriteEntry.COLUMN_USERRATING))));
                 model.setPosterPath(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavoriteEntry.COLUMN_POSTPATH)));
-                model.setOverview(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavoriteEntry.COLUMN_Overview)));
+                model.setOverview(cursor.getString(cursor.getColumnIndex(FavouriteContract.FavoriteEntry.COLUMN_OVERVIEW)));
                 favouritList.add(model);
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
         cursor.close();
         db.close();
         return favouritList;
     }
 }
+

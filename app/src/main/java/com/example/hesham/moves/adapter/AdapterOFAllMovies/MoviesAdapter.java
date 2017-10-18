@@ -19,7 +19,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
     public MoviesAdapter(List<ResultModel> resultModels, Context context) {
         this.resultModels = resultModels;
-
         this.context = context;
     }
 
@@ -32,7 +31,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-        Picasso.with(context).load("http://image.tmdb.org/t/p/w185/" + resultModels.get(position).getPosterPath()).into(holder.imageView);
+        Picasso.with(context)
+                .load("http://image.tmdb.org/t/p/w185/" + resultModels.get(position).getPosterPath())
+                .into(holder.imageView);
 
     }
 
