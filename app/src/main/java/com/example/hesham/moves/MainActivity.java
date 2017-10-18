@@ -247,10 +247,7 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setAdapter(adapter);
 
         }
-
-
         return super.onOptionsItemSelected(item);
-
     }
 
 
