@@ -29,10 +29,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".page.Popular" />
-        <activity android:name=".page.TopRate" />
-        <activity android:name=".page.Favourit">
+        <activity
+            android:name=".AllTrial"
+            android:parentActivityName=".Details">
 
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Details" />
+
+        </activity>
+
+        <activity
+            android:name=".AllReviews"
+            android:parentActivityName=".Details">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Details" />
         </activity>
     </application>
 
