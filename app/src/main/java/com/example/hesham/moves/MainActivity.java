@@ -1,11 +1,14 @@
 package com.example.hesham.moves;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.hesham.moves.Utilities.InternetConnection;
 import com.example.hesham.moves.Utilities.MoviesAPI;
+import com.example.hesham.moves.Utilities.NetworkStateChangeReceiver;
 import com.example.hesham.moves.adapter.AdapterOFAllMovies.MoviesAdapter;
 import com.example.hesham.moves.adapter.RecyclerTouchListener;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
@@ -37,6 +41,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.hesham.moves.Utilities.NetworkStateChangeReceiver.IS_NETWORK_AVAILABLE;
+
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MoviesAdapter adapter;
@@ -50,9 +56,8 @@ public class MainActivity extends AppCompatActivity {
     List<ResultModel> PopularResult = new ArrayList<>();
     List<ResultModel> TopRateResult = new ArrayList<>();
     List<ResultModel> Favourit = new ArrayList<>();
-    int flag=0;
+    int flag = 0;
     public static final String API_KEY = BuildConfig.API_KEY;
-
 
 
     @Override
@@ -63,15 +68,28 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
+        IntentFilter intentFilter = new IntentFilter(NetworkStateChangeReceiver.NETWORK_AVAILABLE_ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
+                        String networkStatus = isNetworkAvailable ? "connected" : "disconnected";
+                        if (networkStatus == "connected") {
 
+                            CallApi();
+                        } else if (networkStatus == "disconnected") {
+                            Toast.makeText(getApplicationContext(), "ther is no internet Connection pleas open the internet", Toast.LENGTH_LONG).show();
 
+                        }
+                    }
+                }, intentFilter);
 
-        CallApi();
 
     }
 
 
-    private  void CallApi() {
+    private void CallApi() {
         if (InternetConnection.checkConnection(MainActivity.this)) {
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -92,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
                         PopularResult = PoplarModel.getResults();
 //                      Log.e("Guinness", response.toString());
-                        flag=1;
+                        flag = 1;
                         adapter = new MoviesAdapter(PopularResult, MainActivity.this);
                         recyclerView.setAdapter(adapter);
 
@@ -108,8 +126,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-
-
 
 
             final Call<MovesModel> TopRate = moviesAPI.getAllMovestop_rated();
@@ -142,27 +158,31 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view, int position) {
 //             Log.d("Guinness",resultModels.get(position).getId().toString());
-                    if (flag==1){
+                    if (InternetConnection.checkConnection(MainActivity.this)) {
+                        if (flag == 1) {
 
-                        Intent i = new Intent(MainActivity.this,Details.class);
-                        ResultModel model=getPopularResult().get(position);
-                        i.putExtra("sampleObject",model);
-                        startActivity(i);
+                            Intent i = new Intent(MainActivity.this, Details.class);
+                            ResultModel model = getPopularResult().get(position);
+                            i.putExtra("sampleObject", model);
+                            startActivity(i);
 
-                    }else if (flag==2){
+                        } else if (flag == 2) {
 
-                        Intent i = new Intent(MainActivity.this,Details.class);
-                        ResultModel model=getTopRateResult().get(position);
-                        i.putExtra("sampleObject",model);
-                        startActivity(i);
+                            Intent i = new Intent(MainActivity.this, Details.class);
+                            ResultModel model = getTopRateResult().get(position);
+                            i.putExtra("sampleObject", model);
+                            startActivity(i);
 
-                    }
-                    else if (flag==3)
-                    {
-                        Intent i = new Intent(MainActivity.this,Details.class);
-                        ResultModel model=getFavourit().get(position);
-                        i.putExtra("sampleObject",model);
-                        startActivity(i);
+                        } else if (flag == 3) {
+                            Intent i = new Intent(MainActivity.this, Details.class);
+                            ResultModel model = getFavourit().get(position);
+                            i.putExtra("sampleObject", model);
+                            startActivity(i);
+
+                        }
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "ther is no internet Connection pleas open the internet  to Open the Ditails ", Toast.LENGTH_LONG).show();
 
                     }
 
@@ -175,13 +195,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }));
 
+        } else {
+            Toast.makeText(this, "ther is no internet Connection pleas open the internet ", Toast.LENGTH_LONG).show();
         }
 
 
-
     }
-
-
 
 
     @Override
@@ -201,32 +220,38 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.Pouplar) {
-            flag=1;
+            if (InternetConnection.checkConnection(MainActivity.this)) {
+
+            } else {
+                Toast.makeText(this, "ther is no internet Connection pleas open the internet ", Toast.LENGTH_LONG).show();
+
+            }
+            flag = 1;
             adapter = new MoviesAdapter(getPopularResult(), MainActivity.this);
             recyclerView.setAdapter(adapter);
 
         }
         if (id == R.id.Favourit) {
-            flag=3;
+            flag = 3;
             adapter = new MoviesAdapter(getFavourit(), MainActivity.this);
             recyclerView.setAdapter(adapter);
 
-
         }
         if (id == R.id.TopRate) {
-            flag=2;
+            if (InternetConnection.checkConnection(MainActivity.this)) {
+            } else {
+                Toast.makeText(this, "ther is no internet Connection pleas open the internet ", Toast.LENGTH_LONG).show();
+            }
+            flag = 2;
             adapter = new MoviesAdapter(getTopRateResult(), MainActivity.this);
             recyclerView.setAdapter(adapter);
 
         }
 
 
-
         return super.onOptionsItemSelected(item);
 
     }
-
-
 
 
 
