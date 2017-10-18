@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
                         boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
                         String networkStatus = isNetworkAvailable ? "connected" : "disconnected";
                         if (networkStatus == "connected") {
-
                             CallApi();
                         } else if (networkStatus == "disconnected") {
                             Toast.makeText(getApplicationContext(), "ther is no internet Connection pleas open the internet", Toast.LENGTH_LONG).show();
