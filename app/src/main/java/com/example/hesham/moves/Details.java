@@ -70,23 +70,7 @@ public class Details extends AppCompatActivity {
                 boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
                 String networkStatus = isNetworkAvailable ? "connected" : "disconnected";
                 if (networkStatus == "connected") {
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl(MoviesAPI.BASE_URL)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    moviesAPI = retrofit.create(MoviesAPI.class);
-                    Intent i = getIntent();
-                    model = (ResultModel) i.getSerializableExtra("sampleObject");
-                    if (model != null) {
-                        Title.setText(model.getTitle());
-                        Dec.setText(model.getOverview());
-                        Picasso.with(Details.this).load("http://image.tmdb.org/t/p/w185/" + model.getPosterPath()).into(img);
-                        data.setText(model.getReleaseDate());
-                        Rate.setText(model.getVoteAverage() + "/10");
-
-
-                    }
+                    CallApi();
                 } else {
                     Toast.makeText(getApplicationContext(), "Opent ther internet to get data ", Toast.LENGTH_LONG).show();
 
@@ -95,7 +79,34 @@ public class Details extends AppCompatActivity {
             }
         }, intentFilter);
 
+        CallApi();
     }
+
+    private void CallApi() {
+        if (InternetConnection.checkConnection(Details.this)) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(MoviesAPI.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            moviesAPI = retrofit.create(MoviesAPI.class);
+            Intent i = getIntent();
+            model = (ResultModel) i.getSerializableExtra("sampleObject");
+            if (model != null) {
+                Title.setText(model.getTitle());
+                Dec.setText(model.getOverview());
+                Picasso.with(Details.this).load("http://image.tmdb.org/t/p/w185/" + model.getPosterPath()).into(img);
+                data.setText(model.getReleaseDate());
+                Rate.setText(model.getVoteAverage() + "/10");
+
+
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "Opent ther internet to get data ", Toast.LENGTH_LONG).show();
+
+        }
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
