@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -12,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +21,6 @@ import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.Utilities.NetworkStateChangeReceiver;
 import com.example.hesham.moves.adapter.AdapterOFAllMovies.MoviesAdapter;
 import com.example.hesham.moves.adapter.RecyclerTouchListener;
-import com.example.hesham.moves.adapter.StatefulRecyclerView;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 
@@ -43,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private MoviesAdapter adapter;
     GridLayoutManager gridLayoutManager;
 
-    private static final String LIST_STATE = "listState";
-    private Parcelable mListState = null;
 
     MoviesAPI moviesAPI;
     MovesModel PoplarModel;
@@ -53,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     List<ResultModel> PopularResult = new ArrayList<>();
     List<ResultModel> TopRateResult = new ArrayList<>();
     List<ResultModel> Favourit = new ArrayList<>();
-    StatefulRecyclerView recycler;
 
     int flag = 0;
     public static final String API_KEY = BuildConfig.API_KEY;
@@ -83,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }, intentFilter);
-        recycler=new StatefulRecyclerView(MainActivity.this);
 
     }
 
