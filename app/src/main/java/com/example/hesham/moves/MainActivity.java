@@ -4,23 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.hesham.moves.Utilities.InternetConnection;
@@ -28,12 +23,12 @@ import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.Utilities.NetworkStateChangeReceiver;
 import com.example.hesham.moves.adapter.AdapterOFAllMovies.MoviesAdapter;
 import com.example.hesham.moves.adapter.RecyclerTouchListener;
+import com.example.hesham.moves.adapter.StatefulRecyclerView;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private MoviesAdapter adapter;
     GridLayoutManager gridLayoutManager;
 
+    private static final String LIST_STATE = "listState";
+    private Parcelable mListState = null;
 
     MoviesAPI moviesAPI;
     MovesModel PoplarModel;
@@ -56,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     List<ResultModel> PopularResult = new ArrayList<>();
     List<ResultModel> TopRateResult = new ArrayList<>();
     List<ResultModel> Favourit = new ArrayList<>();
+    StatefulRecyclerView recycler;
+
     int flag = 0;
     public static final String API_KEY = BuildConfig.API_KEY;
 
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
-            CallApi();
+        CallApi();
         IntentFilter intentFilter = new IntentFilter(NetworkStateChangeReceiver.NETWORK_AVAILABLE_ACTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 new BroadcastReceiver() {
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }, intentFilter);
-
+        recycler=new StatefulRecyclerView(MainActivity.this);
 
     }
 
@@ -161,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                     if (InternetConnection.checkConnection(MainActivity.this)) {
                         if (flag == 1) {
 
-                            Intent i = new Intent(MainActivity.this, Details.class);
+                            Intent i = new Intent(getBaseContext(), Details.class);
                             ResultModel model = getPopularResult().get(position);
                             i.putExtra("sampleObject", model);
                             startActivity(i);
@@ -203,10 +202,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -264,8 +259,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
 
-        super.onSaveInstanceState(outState);
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            CallApi();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            CallApi();
+          }
     }
+
+
 }

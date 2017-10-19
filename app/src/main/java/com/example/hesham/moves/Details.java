@@ -1,11 +1,7 @@
 package com.example.hesham.moves;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,23 +9,16 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.hesham.moves.Utilities.InternetConnection;
 import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 import com.squareup.picasso.Picasso;
-
-
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class Details extends AppCompatActivity {
     ResultModel model;
     ImageView img;
     TextView Title, data, Time, Rate, Dec;
-    MoviesAPI moviesAPI;
 
     String title;
     String time;
@@ -105,22 +94,3 @@ public class Details extends AppCompatActivity {
 
     }
 }
-
-
-
-
-
-//    private void CallApi() {
-//        if (InternetConnection.checkConnection(Details.this)) {
-//
-//            Retrofit retrofit = new Retrofit.Builder()
-//                    .baseUrl(MoviesAPI.BASE_URL)
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build();
-//
-//            moviesAPI = retrofit.create(MoviesAPI.class);
-//        } else {
-//            Toast.makeText(getApplicationContext(), "Opent ther internet to get data ", Toast.LENGTH_LONG).show();
-//
-//        }
-//    }
