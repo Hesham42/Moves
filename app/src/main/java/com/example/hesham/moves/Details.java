@@ -17,29 +17,25 @@ import android.widget.Toast;
 
 import com.example.hesham.moves.Utilities.InternetConnection;
 import com.example.hesham.moves.Utilities.MoviesAPI;
-import com.example.hesham.moves.Utilities.NetworkStateChangeReceiver;
-import com.example.hesham.moves.model.modelVedio.ResultTrial;
-import com.example.hesham.moves.model.modelVedio.Trial;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.example.hesham.moves.Utilities.NetworkStateChangeReceiver.IS_NETWORK_AVAILABLE;
 
 public class Details extends AppCompatActivity {
     ResultModel model;
     ImageView img;
     TextView Title, data, Time, Rate, Dec;
     MoviesAPI moviesAPI;
-    Trial trial;
-    List<ResultTrial> resultTrials = new ArrayList<>();
-    List<String> Keys = new ArrayList<>();
-    List<String> TrialName = new ArrayList<>();
+
+    String title;
+    String time;
+    Double rate;
+    String dec;
+    String image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +45,6 @@ public class Details extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
         Title = (TextView) findViewById(R.id.TitleTex);
         data = (TextView) findViewById(R.id.HistroyTitile);
         Time = (TextView) findViewById(R.id.Houre);
@@ -57,49 +52,45 @@ public class Details extends AppCompatActivity {
         Dec = (TextView) findViewById(R.id.Desc);
         Dec.setMovementMethod(new ScrollingMovementMethod());
         img = (ImageView) findViewById(R.id.ImageOfResutl);
-        IntentFilter intentFilter = new IntentFilter(NetworkStateChangeReceiver.NETWORK_AVAILABLE_ACTION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
-                String networkStatus = isNetworkAvailable ? "connected" : "disconnected";
-                if (networkStatus == "connected") {
-                    CallApi();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Opent ther internet to get data ", Toast.LENGTH_LONG).show();
 
-                }
-
-            }
-        }, intentFilter);
-
-        CallApi();
-    }
-
-    private void CallApi() {
-        if (InternetConnection.checkConnection(Details.this)) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(MoviesAPI.BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            moviesAPI = retrofit.create(MoviesAPI.class);
+        if (savedInstanceState == null) {
             Intent i = getIntent();
             model = (ResultModel) i.getSerializableExtra("sampleObject");
             if (model != null) {
-                Title.setText(model.getTitle());
-                Dec.setText(model.getOverview());
-                Picasso.with(Details.this).load("http://image.tmdb.org/t/p/w185/" + model.getPosterPath()).into(img);
-                data.setText(model.getReleaseDate());
-                Rate.setText(model.getVoteAverage() + "/10");
-
-
+                title = model.getTitle();
+                rate = model.getVoteAverage();
+                dec = model.getOverview();
+                image = model.getPosterPath();
+                time = model.getReleaseDate();
             }
+
         } else {
-            Toast.makeText(getApplicationContext(), "Opent ther internet to get data ", Toast.LENGTH_LONG).show();
+            title = savedInstanceState.getString("title");
+            rate = savedInstanceState.getDouble("rate");
+            dec = savedInstanceState.getString("dec");
+            image = savedInstanceState.getString("image");
+            time = savedInstanceState.getString("time");
+
 
         }
+        Title.setText(title);
+        Dec.setText(dec);
+        Picasso.with(Details.this).load("http://image.tmdb.org/t/p/w185/" + image).into(img);
+        data.setText(time);
+        Rate.setText(rate + "/10");
+
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("title", title);
+        outState.putDouble("rate", rate);
+        outState.putString("dec", dec);
+        outState.putString("image", image);
+        outState.putString("time", time);
+        super.onSaveInstanceState(outState);
+    }
+
 
 
     @Override
@@ -114,3 +105,22 @@ public class Details extends AppCompatActivity {
 
     }
 }
+
+
+
+
+
+//    private void CallApi() {
+//        if (InternetConnection.checkConnection(Details.this)) {
+//
+//            Retrofit retrofit = new Retrofit.Builder()
+//                    .baseUrl(MoviesAPI.BASE_URL)
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .build();
+//
+//            moviesAPI = retrofit.create(MoviesAPI.class);
+//        } else {
+//            Toast.makeText(getApplicationContext(), "Opent ther internet to get data ", Toast.LENGTH_LONG).show();
+//
+//        }
+//    }
