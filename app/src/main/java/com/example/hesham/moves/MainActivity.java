@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     GridLayoutManager gridLayoutManager;
 
 
+
     MoviesAPI moviesAPI;
     MovesModel PoplarModel;
     MovesModel TopRateModel;

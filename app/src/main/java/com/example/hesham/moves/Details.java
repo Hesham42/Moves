@@ -26,6 +26,7 @@ public class Details extends AppCompatActivity {
     String dec;
     String image;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
