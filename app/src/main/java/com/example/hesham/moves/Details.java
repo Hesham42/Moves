@@ -37,7 +37,6 @@ public class Details extends AppCompatActivity {
         }
         Title = (TextView) findViewById(R.id.TitleTex);
         data = (TextView) findViewById(R.id.HistroyTitile);
-        Time = (TextView) findViewById(R.id.Houre);
         Rate = (TextView) findViewById(R.id.Rate);
         Dec = (TextView) findViewById(R.id.Desc);
         Dec.setMovementMethod(new ScrollingMovementMethod());
