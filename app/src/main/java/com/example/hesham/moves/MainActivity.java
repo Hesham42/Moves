@@ -253,6 +253,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
