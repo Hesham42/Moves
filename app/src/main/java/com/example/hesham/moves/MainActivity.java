@@ -138,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
                     } else {
 //                        Log.d("Guinness", " the respons code of TopRate " + response.code());
 
+
+
                     }
 
                 }
