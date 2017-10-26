@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.hesham.moves.Utilities.CommentUpdateModel;
 import com.example.hesham.moves.Utilities.InternetConnection;
 import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.Utilities.NetworkStateChangeReceiver;
@@ -36,7 +37,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.hesham.moves.Utilities.NetworkStateChangeReceiver.IS_NETWORK_AVAILABLE;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  implements CommentUpdateModel.OnCommentAddedListener{
     private RecyclerView recyclerView;
     private MoviesAdapter adapter;
     GridLayoutManager gridLayoutManager;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         favoriteDbHelper = new FavoriteDbHelper(MainActivity.this);
         recyclerView = (RecyclerView) findViewById(R.id.rec);
         recyclerView.setHasFixedSize(true);
+        CommentUpdateModel.getInstance().setListener(this);
         gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
         CallApi();
@@ -273,8 +275,14 @@ public class MainActivity extends AppCompatActivity {
             CallApi();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             CallApi();
-          }
+        }
     }
 
 
+    @Override
+    public void commentDelete() {
+      Favourit=favoriteDbHelper.getAllFavorite();
+        adapter = new MoviesAdapter(Favourit, MainActivity.this);
+        recyclerView.setAdapter(adapter);
+    }
 }

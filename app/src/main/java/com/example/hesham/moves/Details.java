@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.hesham.moves.Utilities.CommentUpdateModel;
 import com.example.hesham.moves.Utilities.InternetConnection;
 import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.adapter.AdapterOFAllMovies.MoviesAdapter;
@@ -195,6 +196,7 @@ public class Details extends AppCompatActivity {
         }else if (fav==1){
             favoriteDbHelper = new FavoriteDbHelper(Details.this);
             favoriteDbHelper.deleteFavorite(id);
+            CommentUpdateModel.getInstance().DeleteComment();
             fav=0;
             Toast.makeText(this,"You delete this Movies from favourit :"+title,Toast.LENGTH_LONG).show();
         }
