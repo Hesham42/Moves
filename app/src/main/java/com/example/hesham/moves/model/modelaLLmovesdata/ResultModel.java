@@ -56,6 +56,7 @@ public class ResultModel implements Serializable {
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
+
     public Integer getVoteCount() {
         return voteCount;
     }

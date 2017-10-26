@@ -6,7 +6,7 @@ import android.provider.BaseColumns;
  * Created by Hesham on 10/12/2017.
  */
 
-public class FavouriteContract {
+public class FavoriteContract {
 
     public static final class FavoriteEntry implements BaseColumns {
         public static final String TABLE_NAME = "favorite";
@@ -15,6 +15,7 @@ public class FavouriteContract {
         public static final String COLUMN_USERRATING = "userrating";
         public static final String COLUMN_POSTER_PATH = "posterpath";
         public static final String COLUMN_PLOT_SYNOPSIS = "overview";
+        public static final String DELETEDORSAVE ="deleteorsave";
 
 
 

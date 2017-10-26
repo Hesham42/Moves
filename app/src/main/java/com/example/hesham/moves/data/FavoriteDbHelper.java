@@ -16,7 +16,7 @@ import java.util.List;
  * Created by Hesham on 10/17/2017.
  */
 
-public class FavouritDbHelper extends SQLiteOpenHelper {
+public class FavoriteDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "favorite.db";
 
     private static final int DATABASE_VERSION = 1;
@@ -26,7 +26,7 @@ public class FavouritDbHelper extends SQLiteOpenHelper {
     SQLiteOpenHelper dbhandler;
     SQLiteDatabase db;
 
-    public FavouritDbHelper(Context context){
+    public FavoriteDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -110,7 +110,7 @@ public class FavouritDbHelper extends SQLiteOpenHelper {
             do {
                 ResultModel  movie = new ResultModel ();
                 movie.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_MOVIEID))));
-                movie.setOriginalTitle(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_TITLE)));
+                movie.setTitle(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_TITLE)));
                 movie.setVoteAverage(Double.parseDouble(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_USERRATING))));
                 movie.setPosterPath(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH)));
                 movie.setOverview(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_PLOT_SYNOPSIS)));

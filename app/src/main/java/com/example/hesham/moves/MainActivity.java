@@ -21,6 +21,7 @@ import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.Utilities.NetworkStateChangeReceiver;
 import com.example.hesham.moves.adapter.AdapterOFAllMovies.MoviesAdapter;
 import com.example.hesham.moves.adapter.RecyclerTouchListener;
+import com.example.hesham.moves.data.FavoriteDbHelper;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 
@@ -54,10 +55,13 @@ public class MainActivity extends AppCompatActivity {
     public static final String API_KEY = BuildConfig.API_KEY;
 
 
+    private FavoriteDbHelper favoriteDbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        favoriteDbHelper = new FavoriteDbHelper(MainActivity.this);
         recyclerView = (RecyclerView) findViewById(R.id.rec);
         recyclerView.setHasFixedSize(true);
         gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
@@ -93,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             moviesAPI = retrofit.create(MoviesAPI.class);
 
 
-            Call<MovesModel> PopularRecall = moviesAPI.getAllMovesPopular();
+            Call<MovesModel> PopularRecall = moviesAPI.getAllMovesPopular(API_KEY);
             PopularRecall.enqueue(new Callback<MovesModel>() {
                 @Override
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
@@ -121,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
-            final Call<MovesModel> TopRate = moviesAPI.getAllMovestop_rated();
+            final Call<MovesModel> TopRate = moviesAPI.getAllMovestop_rated(API_KEY);
             TopRate.enqueue(new Callback<MovesModel>() {
                 @Override
                 public void onResponse(Call<MovesModel> call, Response<MovesModel> response) {
@@ -170,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
                             Intent i = new Intent(MainActivity.this, Details.class);
                             ResultModel model = getFavourit().get(position);
                             i.putExtra("sampleObject", model);
+                            i.putExtra("fav","fav");
                             startActivity(i);
 
                         }
@@ -249,7 +254,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public List<ResultModel> getFavourit() {
+        Favourit= favoriteDbHelper.getAllFavorite();
         return Favourit;
+
     }
 
 
