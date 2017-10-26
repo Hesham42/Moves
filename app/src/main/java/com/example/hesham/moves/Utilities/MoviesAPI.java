@@ -1,8 +1,5 @@
 package com.example.hesham.moves.Utilities;
 
-import android.util.Log;
-
-import com.example.hesham.moves.BuildConfig;
 import com.example.hesham.moves.model.modelVedio.Trial;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelreviews.Reviews;
