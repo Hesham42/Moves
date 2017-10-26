@@ -49,7 +49,7 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
                 FavoriteContract.FavoriteEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 FavoriteContract.FavoriteEntry.COLUMN_USERRATING + " REAL NOT NULL, " +
                 FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
-                FavoriteContract.FavoriteEntry.COLUMN_PLOT_SYNOPSIS + " TEXT NOT NULL" +
+                FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW + " TEXT NOT NULL" +
                 "); ";
 
         sqLiteDatabase.execSQL(SQL_CREATE_FAVORITE_TABLE);
@@ -71,7 +71,7 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
         values.put(FavoriteContract.FavoriteEntry.COLUMN_TITLE, movie.getOriginalTitle());
         values.put(FavoriteContract.FavoriteEntry.COLUMN_USERRATING, movie.getVoteAverage());
         values.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
-        values.put(FavoriteContract.FavoriteEntry.COLUMN_PLOT_SYNOPSIS, movie.getOverview());
+        values.put(FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW, movie.getOverview());
 
         db.insert(FavoriteContract.FavoriteEntry.TABLE_NAME, null, values);
         db.close();
@@ -89,7 +89,7 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
                 FavoriteContract.FavoriteEntry.COLUMN_TITLE,
                 FavoriteContract.FavoriteEntry.COLUMN_USERRATING,
                 FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH,
-                FavoriteContract.FavoriteEntry.COLUMN_PLOT_SYNOPSIS
+                FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW
 
         };
         String sortOrder =
@@ -113,7 +113,7 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
                 movie.setTitle(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_TITLE)));
                 movie.setVoteAverage(Double.parseDouble(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_USERRATING))));
                 movie.setPosterPath(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH)));
-                movie.setOverview(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_PLOT_SYNOPSIS)));
+                movie.setOverview(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW)));
 
                 favoriteList.add(movie);
 

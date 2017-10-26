@@ -14,8 +14,7 @@ public class FavoriteContract {
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_USERRATING = "userrating";
         public static final String COLUMN_POSTER_PATH = "posterpath";
-        public static final String COLUMN_PLOT_SYNOPSIS = "overview";
-        public static final String DELETEDORSAVE ="deleteorsave";
+        public static final String COLUMN_OVERVIEW = "overview";
 
 
 
