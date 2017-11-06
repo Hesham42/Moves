@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="Titile">20dp</dimen>
+    <dimen name="sixdp">6dp</dimen>
+    <dimen name="tendp">10dp</dimen>
+</resources>
