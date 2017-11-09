@@ -1,8 +1,10 @@
 package com.example.hesham.moves;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +24,7 @@ import com.example.hesham.moves.Utilities.InternetConnection;
 import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.adapter.AdapterOFAllMovies.MoviesAdapter;
 import com.example.hesham.moves.adapter.AdapterOfTrial.AdapterOfTrial;
+import com.example.hesham.moves.data.FavoriteContract;
 import com.example.hesham.moves.data.FavoriteDbHelper;
 import com.example.hesham.moves.model.modelVedio.ResultTrial;
 import com.example.hesham.moves.model.modelVedio.Trailer;
@@ -182,10 +185,23 @@ public class Details extends AppCompatActivity {
     }
 
     public void saveFavorite(){
-        favoriteDbHelper = new FavoriteDbHelper(this);
+//        favoriteDbHelper = new FavoriteDbHelper(this);
         ResultModel favorite = new ResultModel();
+//        favoriteDbHelper.addFavorite(favorite);
         favorite=model;
-        favoriteDbHelper.addFavorite(favorite);
+        ContentValues values = new ContentValues();
+        values.put(FavoriteContract.FavoriteEntry.COLUMN_MOVIEID, model.getId());
+        values.put(FavoriteContract.FavoriteEntry.COLUMN_TITLE, model.getOriginalTitle());
+        values.put(FavoriteContract.FavoriteEntry.COLUMN_USERRATING, model.getVoteAverage());
+        values.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH, model.getPosterPath());
+        values.put(FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW, model.getOverview());
+
+        Uri uri=getContentResolver().insert(FavoriteContract.FavoriteEntry.CONTENT_URI,values);
+        if (uri != null)
+        {
+        Toast.makeText(getBaseContext(),uri.toString(),Toast.LENGTH_LONG).show();
+        }
+
     }
 
     public void OnFavorite(View view) {

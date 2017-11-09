@@ -56,6 +56,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Details" />
         </activity>
+
+        <provider
+            android:name="com.example.hesham.moves.data.FavoriteContentProvider"
+            android:authorities="com.example.hesham.moves"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

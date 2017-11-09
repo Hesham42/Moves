@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Parcelable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.Utilities.NetworkStateChangeReceiver;
 import com.example.hesham.moves.adapter.AdapterOFAllMovies.MoviesAdapter;
 import com.example.hesham.moves.adapter.RecyclerTouchListener;
+import com.example.hesham.moves.data.FavoriteContract;
 import com.example.hesham.moves.data.FavoriteDbHelper;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
@@ -36,17 +39,17 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.hesham.moves.Utilities.NetworkStateChangeReceiver.IS_NETWORK_AVAILABLE;
+import static com.example.hesham.moves.data.FavoriteContentProvider.Favourit_With_ID;
 
-public class MainActivity extends AppCompatActivity  implements CommentUpdateModel.OnCommentAddedListener{
+public class MainActivity extends AppCompatActivity  implements CommentUpdateModel.OnCommentAddedListener, LoaderManager.LoaderCallbacks<Object> {
     private RecyclerView recyclerView;
     private MoviesAdapter adapter;
     GridLayoutManager gridLayoutManager;
-
-
-
     MoviesAPI moviesAPI;
     MovesModel PoplarModel;
     MovesModel TopRateModel;
+    private static final int Favourit_LOADER_ID = 0;
+
 
     List<ResultModel> PopularResult = new ArrayList<>();
     List<ResultModel> TopRateResult = new ArrayList<>();
@@ -284,5 +287,30 @@ public class MainActivity extends AppCompatActivity  implements CommentUpdateMod
       Favourit=favoriteDbHelper.getAllFavorite();
         adapter = new MoviesAdapter(Favourit, MainActivity.this);
         recyclerView.setAdapter(adapter);
+    }
+
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // re-queries for all tasks
+        getSupportLoaderManager().restartLoader(Favourit_LOADER_ID, null, this);
+    }
+
+    @Override
+    public Loader<Object> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Object> loader, Object data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Object> loader) {
+
     }
 }
