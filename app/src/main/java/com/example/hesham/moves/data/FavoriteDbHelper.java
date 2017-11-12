@@ -12,6 +12,9 @@ import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.hesham.moves.data.FavoriteContract.FavoriteEntry.COLUMN_MOVIEID;
+import static com.example.hesham.moves.data.FavoriteContract.FavoriteEntry.TABLE_NAME;
+
 /**
  * Created by Hesham on 10/17/2017.
  */
@@ -43,9 +46,8 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        final String SQL_CREATE_FAVORITE_TABLE = "CREATE TABLE " + FavoriteContract.FavoriteEntry.TABLE_NAME + " (" +
-                FavoriteContract.FavoriteEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                FavoriteContract.FavoriteEntry.COLUMN_MOVIEID + " INTEGER, " +
+        final String SQL_CREATE_FAVORITE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
+                COLUMN_MOVIEID + " INTEGER  PRIMARY KEY, " +
                 FavoriteContract.FavoriteEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 FavoriteContract.FavoriteEntry.COLUMN_USERRATING + " REAL NOT NULL, " +
                 FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
@@ -58,7 +60,7 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + FavoriteContract.FavoriteEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(sqLiteDatabase);
 
     }
@@ -67,12 +69,12 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
         boolean flag = false;
         ///////////////////////////////////////////////////////
         String[] columns = {
-                FavoriteContract.FavoriteEntry.COLUMN_MOVIEID
+                COLUMN_MOVIEID
         };
         String sortOrder =
                 FavoriteContract.FavoriteEntry._ID + " ASC";
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(FavoriteContract.FavoriteEntry.TABLE_NAME,
+        Cursor cursor = db.query(TABLE_NAME,
                 columns,
                 null,
                 null,
@@ -82,7 +84,7 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_MOVIEID)
+                if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_MOVIEID)
                 )) == movie.getId()) {
                     flag = true;
                 }
@@ -96,13 +98,13 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
             db = this.getWritableDatabase();
 
             ContentValues values = new ContentValues();
-            values.put(FavoriteContract.FavoriteEntry.COLUMN_MOVIEID, movie.getId());
+            values.put(COLUMN_MOVIEID, movie.getId());
             values.put(FavoriteContract.FavoriteEntry.COLUMN_TITLE, movie.getOriginalTitle());
             values.put(FavoriteContract.FavoriteEntry.COLUMN_USERRATING, movie.getVoteAverage());
             values.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
             values.put(FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW, movie.getOverview());
 
-            db.insert(FavoriteContract.FavoriteEntry.TABLE_NAME, null, values);
+            db.insert(TABLE_NAME, null, values);
             db.close();
 
         }
@@ -110,13 +112,12 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
 
     public void deleteFavorite(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(FavoriteContract.FavoriteEntry.TABLE_NAME, FavoriteContract.FavoriteEntry.COLUMN_MOVIEID + "=" + id, null);
+        db.delete(TABLE_NAME, COLUMN_MOVIEID + "=" + id, null);
     }
 
     public List<ResultModel> getAllFavorite() {
         String[] columns = {
-                FavoriteContract.FavoriteEntry._ID,
-                FavoriteContract.FavoriteEntry.COLUMN_MOVIEID,
+                COLUMN_MOVIEID,
                 FavoriteContract.FavoriteEntry.COLUMN_TITLE,
                 FavoriteContract.FavoriteEntry.COLUMN_USERRATING,
                 FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH,
@@ -124,12 +125,12 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
 
         };
         String sortOrder =
-                FavoriteContract.FavoriteEntry._ID + " ASC";
+                COLUMN_MOVIEID + " ASC";
         List<ResultModel> favoriteList = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(FavoriteContract.FavoriteEntry.TABLE_NAME,
+        Cursor cursor = db.query(TABLE_NAME,
                 columns,
                 null,
                 null,
@@ -140,7 +141,7 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 ResultModel movie = new ResultModel();
-                movie.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_MOVIEID))));
+                movie.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_MOVIEID))));
                 movie.setTitle(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_TITLE)));
                 movie.setVoteAverage(Double.parseDouble(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_USERRATING))));
                 movie.setPosterPath(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH)));
@@ -155,5 +156,34 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
 
         return favoriteList;
     }
+    public boolean Exists(int ID) {
+        boolean flag = false;
+        String[] columns = {
+                COLUMN_MOVIEID
+        };
+        String sortOrder =
+                FavoriteContract.FavoriteEntry.COLUMN_MOVIEID+ " ASC";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NAME,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                sortOrder);
 
+        if (cursor.moveToFirst()) {
+            do {
+                if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_MOVIEID)
+                )) == ID) {
+                    flag = true;
+                }
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return flag;
+}
 }

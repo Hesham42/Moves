@@ -2,17 +2,13 @@ package com.example.hesham.moves;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,43 +17,28 @@ import android.widget.Toast;
 
 import com.example.hesham.moves.Utilities.CommentUpdateModel;
 import com.example.hesham.moves.Utilities.InternetConnection;
-import com.example.hesham.moves.Utilities.MoviesAPI;
-import com.example.hesham.moves.adapter.AdapterOFAllMovies.MoviesAdapter;
-import com.example.hesham.moves.adapter.AdapterOfTrial.AdapterOfTrial;
 import com.example.hesham.moves.data.FavoriteContract;
 import com.example.hesham.moves.data.FavoriteDbHelper;
-import com.example.hesham.moves.model.modelVedio.ResultTrial;
-import com.example.hesham.moves.model.modelVedio.Trailer;
-import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 
 public class Details extends AppCompatActivity {
     ResultModel model;
     ImageView img;
     TextView Title, data, Time, Rate, Dec;
-    String chechs=null;
+    String chechs = null;
     int id;
     String title;
     String time;
     Double rate;
     String dec;
     String image;
-    int fav=0;
+    int fav = 0;
 
     private FavoriteDbHelper favoriteDbHelper;
 
     ResultModel favorite;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +47,7 @@ public class Details extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        favoriteDbHelper = new FavoriteDbHelper(Details.this);
         Title = (TextView) findViewById(R.id.TitleTex);
         data = (TextView) findViewById(R.id.HistroyTitile);
         Rate = (TextView) findViewById(R.id.Rate);
@@ -76,14 +58,14 @@ public class Details extends AppCompatActivity {
         if (savedInstanceState == null) {
             Intent i = getIntent();
             model = (ResultModel) i.getSerializableExtra("sampleObject");
-            try{
-             chechs =  i.getStringExtra("fav");
-                if (chechs!=null){
-                   fav=1;
-                }else{
+            try {
+                chechs = i.getStringExtra("fav");
+                if (chechs != null) {
+                    fav = 1;
+                } else {
 
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
             }
 
             if (model != null) {
@@ -96,7 +78,7 @@ public class Details extends AppCompatActivity {
             }
 
         } else {
-            fav=savedInstanceState.getInt("fav");
+            fav = savedInstanceState.getInt("fav");
             id = savedInstanceState.getInt("id");
             title = savedInstanceState.getString("title");
             rate = savedInstanceState.getDouble("rate");
@@ -113,7 +95,7 @@ public class Details extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("fav",fav);
+        outState.putInt("fav", fav);
         outState.putInt("id", id);
         outState.putString("title", title);
         outState.putDouble("rate", rate);
@@ -184,37 +166,34 @@ public class Details extends AppCompatActivity {
         Rate.setText(rate + "/10");
     }
 
-    public void saveFavorite(){
-//        favoriteDbHelper = new FavoriteDbHelper(this);
+    public void SaveAndDelelteFavorite() {
         ResultModel favorite = new ResultModel();
-//        favoriteDbHelper.addFavorite(favorite);
-        favorite=model;
-        ContentValues values = new ContentValues();
-        values.put(FavoriteContract.FavoriteEntry.COLUMN_MOVIEID, model.getId());
-        values.put(FavoriteContract.FavoriteEntry.COLUMN_TITLE, model.getOriginalTitle());
-        values.put(FavoriteContract.FavoriteEntry.COLUMN_USERRATING, model.getVoteAverage());
-        values.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH, model.getPosterPath());
-        values.put(FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW, model.getOverview());
+        boolean flag = favoriteDbHelper.Exists(model.getId());
+        if (flag == false) {
+            favorite = model;
+            ContentValues values = new ContentValues();
+            values.put(FavoriteContract.FavoriteEntry.COLUMN_MOVIEID, model.getId());
+            values.put(FavoriteContract.FavoriteEntry.COLUMN_TITLE, model.getOriginalTitle());
+            values.put(FavoriteContract.FavoriteEntry.COLUMN_USERRATING, model.getVoteAverage());
+            values.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH, model.getPosterPath());
+            values.put(FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW, model.getOverview());
 
-        Uri uri=getContentResolver().insert(FavoriteContract.FavoriteEntry.CONTENT_URI,values);
-        if (uri != null)
-        {
-        Toast.makeText(getBaseContext(),uri.toString(),Toast.LENGTH_LONG).show();
+            Uri uri = getContentResolver().insert(FavoriteContract.FavoriteEntry.CONTENT_URI, values);
+            if (uri != null) {
+                Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+            }
+
+        } else {
+            favoriteDbHelper.deleteFavorite(id);
+            CommentUpdateModel.getInstance().DeleteComment();
+
+            Toast.makeText(this, "You delete the :::::->>>> :" + title, Toast.LENGTH_LONG).show();
+
         }
 
     }
 
     public void OnFavorite(View view) {
-        if (fav==0){
-            fav=1;
-            saveFavorite();
-            Toast.makeText(this,"You save this Movies on favourit  :"+title,Toast.LENGTH_LONG).show();
-        }else if (fav==1){
-            favoriteDbHelper = new FavoriteDbHelper(Details.this);
-            favoriteDbHelper.deleteFavorite(id);
-            CommentUpdateModel.getInstance().DeleteComment();
-            fav=0;
-            Toast.makeText(this,"You delete this Movies from favourit :"+title,Toast.LENGTH_LONG).show();
-        }
+        SaveAndDelelteFavorite();
     }
 }

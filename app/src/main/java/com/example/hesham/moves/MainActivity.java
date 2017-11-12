@@ -5,14 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.os.Parcelable;
+import android.database.Cursor;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +41,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.hesham.moves.Utilities.NetworkStateChangeReceiver.IS_NETWORK_AVAILABLE;
-import static com.example.hesham.moves.data.FavoriteContentProvider.Favourit_With_ID;
+
 
 public class MainActivity extends AppCompatActivity  implements CommentUpdateModel.OnCommentAddedListener, LoaderManager.LoaderCallbacks<Object> {
     private RecyclerView recyclerView;
@@ -284,7 +286,7 @@ public class MainActivity extends AppCompatActivity  implements CommentUpdateMod
 
     @Override
     public void commentDelete() {
-      Favourit=favoriteDbHelper.getAllFavorite();
+        Favourit=favoriteDbHelper.getAllFavorite();
         adapter = new MoviesAdapter(Favourit, MainActivity.this);
         recyclerView.setAdapter(adapter);
     }
@@ -296,7 +298,7 @@ public class MainActivity extends AppCompatActivity  implements CommentUpdateMod
         super.onResume();
 
         // re-queries for all tasks
-        getSupportLoaderManager().restartLoader(Favourit_LOADER_ID, null, this);
+//        getSupportLoaderManager().restartLoader(Favourit_LOADER_ID, null, this);
     }
 
     @Override
