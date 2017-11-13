@@ -11,8 +11,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.Collections;
+
+import static com.example.hesham.moves.data.FavoriteContract.FavoriteEntry.TABLE_NAME;
 
 /**
  * Created by guinness on 09/11/17.
@@ -86,7 +89,7 @@ public class FavoriteContentProvider extends ContentProvider {
             case Favourits:
                 // Insert new values into the database
                 // Inserting values into tasks table
-                Long id = db.insert(FavoriteContract.FavoriteEntry.TABLE_NAME, null, values);
+                Long id = db.insert(TABLE_NAME, null, values);
                 if (id > 0) {
 //                    success
                     returnUri1 = ContentUris.withAppendedId(FavoriteContract.FavoriteEntry.CONTENT_URI, id);
@@ -100,6 +103,7 @@ public class FavoriteContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException("UnKnown uri:" + uri);
 
         }
+
         getContext().getContentResolver().notifyChange(uri, null);
         return returnUri1;
 
@@ -107,7 +111,12 @@ public class FavoriteContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+    public Cursor query(@NonNull Uri uri
+            , @Nullable String[] projection,
+            @Nullable String selection,
+            @Nullable String[] selectionArgs,
+            @Nullable String sortOrder)
+    {
         final SQLiteDatabase db = mFavoriteDbHelper.getReadableDatabase();
 
         int match = sURI_MATCHER.match(uri);
@@ -115,7 +124,7 @@ public class FavoriteContentProvider extends ContentProvider {
         Cursor retCursor;
         switch (match) {
             case Favourits:
-                retCursor = db.query(FavoriteContract.FavoriteEntry.TABLE_NAME,
+                retCursor = db.query(TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -123,22 +132,6 @@ public class FavoriteContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
-
-
-            case Favourit_With_ID:
-//                using selection and selectionArgs
-//                URI:content://<Authority>/tableName/#
-                String id = uri.getPathSegments().get(1);
-//                selection is _ID column =?. and selection arg =the row If from URI
-                String mSelection = "_id=?";
-                String[] mSelectionArgs = new String[]{id};
-                retCursor = db.query(FavoriteContract.FavoriteEntry.TABLE_NAME,
-                        projection,
-                        mSelection,
-                        mSelectionArgs,
-                        null,
-                        null,
-                        sortOrder);
             default:
                 throw new UnsupportedOperationException("Unknown uri" + uri);
         }
@@ -153,39 +146,41 @@ public class FavoriteContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+    public int delete(@NonNull Uri uri,
+                      @Nullable String selection,
+                      @Nullable String[] selectionArgs)
+    {
         // Get access to the database and write URI matching code to recognize a single item
-        final  SQLiteDatabase db =mFavoriteDbHelper.getWritableDatabase();
-        int match =sURI_MATCHER.match(uri);
-        // Keep track of the number of deleted tasks
+        final SQLiteDatabase db = mFavoriteDbHelper.getWritableDatabase();
 
-        int FavouritDelete;
+        int match = sURI_MATCHER.match(uri);
+        // Keep track of the number of deleted tasks
+        int tasksDeleted; // starts as 0
 
         // Write the code to delete a single row of data
         // [Hint] Use selections to delete an item by its row ID
-
-        switch (match)
-        {
+        switch (match) {
             // Handle the single item case, recognized by the ID included in the URI path
             case Favourit_With_ID:
+                Log.e("Guinness","enter switch case ");
                 // Get the task ID from the URI path
                 String id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                FavouritDelete=db.delete
-                        (FavoriteContract.FavoriteEntry.TABLE_NAME
-                        ,"_id=?",
-                        new String[]{id});
+                tasksDeleted = db.delete(TABLE_NAME, "movieid=?", new String[]{id});
                 break;
             default:
+                Log.e("Guinness","Failed in Switch");
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+
         // Notify the resolver of a change and return the number of items deleted
-        if (FavouritDelete != 0) {
+        Log.e("Guinness","Fished switch");
+        if (tasksDeleted != 0) {
             // A task was deleted, set notification
             getContext().getContentResolver().notifyChange(uri, null);
         }
         // Return the number of tasks deleted
-          return FavouritDelete;
+        return tasksDeleted;
 
     }
 

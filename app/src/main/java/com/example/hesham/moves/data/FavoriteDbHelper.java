@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.hesham.moves.data.FavoriteContract.FavoriteEntry.COLUMN_MOVIEID;
+import static com.example.hesham.moves.data.FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW;
+import static com.example.hesham.moves.data.FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH;
+import static com.example.hesham.moves.data.FavoriteContract.FavoriteEntry.COLUMN_TITLE;
+import static com.example.hesham.moves.data.FavoriteContract.FavoriteEntry.COLUMN_USERRATING;
 import static com.example.hesham.moves.data.FavoriteContract.FavoriteEntry.TABLE_NAME;
 
 /**
@@ -47,12 +51,14 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         final String SQL_CREATE_FAVORITE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_MOVIEID + " INTEGER  PRIMARY KEY, " +
-                FavoriteContract.FavoriteEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
-                FavoriteContract.FavoriteEntry.COLUMN_USERRATING + " REAL NOT NULL, " +
-                FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
-                FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW + " TEXT NOT NULL" +
+                COLUMN_MOVIEID + " INTEGER PRIMARY KEY, " +
+                COLUMN_TITLE + " TEXT NOT NULL, " +
+                COLUMN_USERRATING + " REAL NOT NULL, " +
+                COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
+                COLUMN_OVERVIEW + " TEXT NOT NULL" +
                 "); ";
+
+
 
         sqLiteDatabase.execSQL(SQL_CREATE_FAVORITE_TABLE);
     }
@@ -99,10 +105,10 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
 
             ContentValues values = new ContentValues();
             values.put(COLUMN_MOVIEID, movie.getId());
-            values.put(FavoriteContract.FavoriteEntry.COLUMN_TITLE, movie.getOriginalTitle());
-            values.put(FavoriteContract.FavoriteEntry.COLUMN_USERRATING, movie.getVoteAverage());
-            values.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
-            values.put(FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW, movie.getOverview());
+            values.put(COLUMN_TITLE, movie.getOriginalTitle());
+            values.put(COLUMN_USERRATING, movie.getVoteAverage());
+            values.put(COLUMN_POSTER_PATH, movie.getPosterPath());
+            values.put(COLUMN_OVERVIEW, movie.getOverview());
 
             db.insert(TABLE_NAME, null, values);
             db.close();
@@ -112,20 +118,20 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
 
     public void deleteFavorite(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, COLUMN_MOVIEID + "=" + id, null);
+        db.delete(TABLE_NAME, FavoriteContract.FavoriteEntry._ID + "=" + id, null);
     }
 
     public List<ResultModel> getAllFavorite() {
         String[] columns = {
                 COLUMN_MOVIEID,
-                FavoriteContract.FavoriteEntry.COLUMN_TITLE,
-                FavoriteContract.FavoriteEntry.COLUMN_USERRATING,
-                FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH,
-                FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW
+                COLUMN_TITLE,
+                COLUMN_USERRATING,
+                COLUMN_POSTER_PATH,
+                COLUMN_OVERVIEW
 
         };
         String sortOrder =
-                COLUMN_MOVIEID + " ASC";
+                FavoriteContract.FavoriteEntry._ID + " ASC";
         List<ResultModel> favoriteList = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -142,10 +148,10 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
             do {
                 ResultModel movie = new ResultModel();
                 movie.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_MOVIEID))));
-                movie.setTitle(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_TITLE)));
-                movie.setVoteAverage(Double.parseDouble(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_USERRATING))));
-                movie.setPosterPath(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH)));
-                movie.setOverview(cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW)));
+                movie.setTitle(cursor.getString(cursor.getColumnIndex(COLUMN_TITLE)));
+                movie.setVoteAverage(Double.parseDouble(cursor.getString(cursor.getColumnIndex(COLUMN_USERRATING))));
+                movie.setPosterPath(cursor.getString(cursor.getColumnIndex(COLUMN_POSTER_PATH)));
+                movie.setOverview(cursor.getString(cursor.getColumnIndex(COLUMN_OVERVIEW)));
 
                 favoriteList.add(movie);
 

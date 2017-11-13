@@ -1,5 +1,6 @@
 package com.example.hesham.moves;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -9,6 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +24,8 @@ import com.example.hesham.moves.data.FavoriteDbHelper;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 import com.squareup.picasso.Picasso;
 
+import static com.example.hesham.moves.data.FavoriteContract.FavoriteEntry.CONTENT_URI;
+
 public class Details extends AppCompatActivity {
     ResultModel model;
     ImageView img;
@@ -34,6 +38,7 @@ public class Details extends AppCompatActivity {
     String dec;
     String image;
     int fav = 0;
+    private static final int Favoirut_LOADER_ID = 0;
 
     private FavoriteDbHelper favoriteDbHelper;
 
@@ -146,17 +151,17 @@ public class Details extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            GetData();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            GetData();
-        }
-    }
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//
+//        // Checks the orientation of the screen
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            GetData();
+//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+//            GetData();
+//        }
+//    }
 
     private void GetData() {
         Title.setText(title);
@@ -178,14 +183,31 @@ public class Details extends AppCompatActivity {
             values.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH, model.getPosterPath());
             values.put(FavoriteContract.FavoriteEntry.COLUMN_OVERVIEW, model.getOverview());
 
-            Uri uri = getContentResolver().insert(FavoriteContract.FavoriteEntry.CONTENT_URI, values);
+            Uri uri = getContentResolver().insert(CONTENT_URI, values);
+            Log.e("Guinness","enter save ");
             if (uri != null) {
                 Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
             }
 
         } else {
-            favoriteDbHelper.deleteFavorite(id);
+//-------------------------------------------------------
+            Log.e("Guinness","enter delete statment");
+            int id = (int) model.getId();
+
+            // Build appropriate uri with String row id appended
+            String stringId = Integer.toString(id);
+            Uri uri = FavoriteContract.FavoriteEntry.CONTENT_URI;
+            uri = uri.buildUpon().appendPath(stringId).build();
+
+            // COMPLETED (2) Delete a single row of data using a ContentResolver
+            Log.e("Guinness","start at Delete with URL ");
+             int i=getContentResolver().delete(uri, null, null);
+            Log.e("Guinness","returnt statment = "+Integer.toString(i));
+
             CommentUpdateModel.getInstance().DeleteComment();
+            finish();
+//            -------------------------------------------------
+//          favoriteDbHelper.deleteFavorite(id);
 
             Toast.makeText(this, "You delete the :::::->>>> :" + title, Toast.LENGTH_LONG).show();
 
