@@ -6,5 +6,5 @@
     <color name="colorBlackTrans">#93000000</color>
     <color name="TextColor">#aea2a2</color>
     <color name="colorBlackTrans2">#08aea2a2</color>
-
+    <color name="TEX">#fff</color>
 </resources>

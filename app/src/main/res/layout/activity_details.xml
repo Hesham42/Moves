@@ -27,7 +27,7 @@
                 android:padding="6dp"
                 android:text="MOvies name "
                 android:textColor="@color/TextColor"
-                android:textSize="20dp" />
+                android:textSize="@dimen/Titile" />
         </LinearLayout>
 
         <LinearLayout
@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|center|center_vertical"
                     android:layout_margin="6dp"
-                    android:padding="6dp"
+                    android:padding="@dimen/Padding"
                     android:text="2015"
                     android:textColor="@color/TextColor" />
 
@@ -61,8 +61,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|center|center_vertical"
-                    android:layout_margin="6dp"
-                    android:padding="6dp"
+                    android:layout_margin="@dimen/Padding"
+                    android:padding="@dimen/Padding"
                     android:text="8.1/10"
                     android:textColor="@color/TextColor" />
 
@@ -74,23 +74,23 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/Padding"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="@dimen/Padding">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Descriptiom"
                 android:textColor="@color/TextColor"
-                android:textSize="18dp" />
+                android:textSize="@dimen/desc" />
 
             <TextView
                 android:id="@+id/Desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:padding="6dp"
+                android:layout_margin="@dimen/Padding"
+                android:padding="@dimen/Padding"
                 android:scrollbars="vertical"
                 android:textColor="@color/TextColor" />
         </LinearLayout>
@@ -99,40 +99,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center|center_vertical"
-            android:layout_margin="6dp"
+            android:layout_margin="@dimen/Padding"
             android:background="@drawable/background"
             android:gravity="center"
             android:onClick="OnFavorite"
-            android:padding="10dp"
+            android:padding="@dimen/Padding"
             android:text="Favourit"
-            android:textColor="#fff"
-            android:textSize="16dp" />
+            android:textColor="@color/TEX"
+            android:textSize="@dimen/desc" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center|center_vertical"
-            android:layout_margin="6dp"
+            android:layout_margin="@dimen/Padding"
             android:background="@drawable/background"
             android:gravity="center"
             android:onClick="ONTrial"
-            android:padding="10dp"
+            android:padding="@dimen/Padding"
             android:text="Trials"
-            android:textColor="#fff"
-            android:textSize="16dp" />
+            android:textColor="@color/TEX"
+            android:textSize="@dimen/desc" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center|center_vertical"
-            android:layout_margin="6dp"
+            android:layout_margin="@dimen/Padding"
             android:background="@drawable/background"
             android:gravity="center"
             android:onClick="OnReviews"
-            android:padding="10dp"
+            android:padding="@dimen/Padding"
             android:text=" Reviews "
-            android:textColor="#fff"
-            android:textSize="16dp" />
+            android:textColor="@color/TEX"
+            android:textSize="@dimen/desc" />
 
     </LinearLayout>
 </FrameLayout>

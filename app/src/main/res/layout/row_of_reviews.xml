@@ -17,16 +17,16 @@
              android:layout_weight="1"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:padding="10dp"
+             android:padding="@dimen/Padding"
              android:textColor="@color/TextColor"
-             android:layout_margin="10dp"/>
+             android:layout_margin="@dimen/Padding"/>
          <TextView
              android:layout_weight="1"
              android:id="@+id/author"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:padding="10dp"
-             android:layout_margin="10dp"
+             android:padding="@dimen/Padding"
+             android:layout_margin="@dimen/Padding"
              android:textColor="@color/TextColor"
              />
 
@@ -38,14 +38,14 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:textColor="@color/TextColor"
-            android:layout_margin="10dp"/>
+            android:layout_margin="@dimen/Padding"/>
         <TextView
             android:textColor="@color/TextColor"
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_margin="10dp"/>
+            android:padding="@dimen/Padding"
+            android:layout_margin="@dimen/Padding"/>
 
     </LinearLayout>
 
