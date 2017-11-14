@@ -116,6 +116,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
         }
     }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

@@ -151,17 +151,6 @@ public class Details extends AppCompatActivity {
 
     }
 
-//    @Override
-//    public void onConfigurationChanged(Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//
-//        // Checks the orientation of the screen
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            GetData();
-//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            GetData();
-//        }
-//    }
 
     private void GetData() {
         Title.setText(title);
@@ -202,10 +191,10 @@ public class Details extends AppCompatActivity {
             // COMPLETED (2) Delete a single row of data using a ContentResolver
             Log.e("Guinness","start at Delete with URL ");
              int i=getContentResolver().delete(uri, null, null);
-            Log.e("Guinness","returnt statment = "+Integer.toString(i));
+            Log.e("Guinness","returnt statment = "+stringId);
 
             CommentUpdateModel.getInstance().DeleteComment();
-            finish();
+
 //            -------------------------------------------------
 //          favoriteDbHelper.deleteFavorite(id);
 

@@ -175,10 +175,7 @@ public class FavoriteContentProvider extends ContentProvider {
 
         // Notify the resolver of a change and return the number of items deleted
         Log.e("Guinness","Fished switch");
-        if (tasksDeleted != 0) {
-            // A task was deleted, set notification
-            getContext().getContentResolver().notifyChange(uri, null);
-        }
+        getContext().getContentResolver().notifyChange(uri, null);
         // Return the number of tasks deleted
         return tasksDeleted;
 

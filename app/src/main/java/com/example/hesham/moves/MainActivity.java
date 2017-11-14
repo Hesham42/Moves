@@ -25,10 +25,12 @@ import com.example.hesham.moves.Utilities.MoviesAPI;
 import com.example.hesham.moves.Utilities.NetworkStateChangeReceiver;
 import com.example.hesham.moves.adapter.AdapterOFAllMovies.MoviesAdapter;
 import com.example.hesham.moves.adapter.RecyclerTouchListener;
+import com.example.hesham.moves.data.FavoriteContract;
 import com.example.hesham.moves.data.FavoriteDbHelper;
 import com.example.hesham.moves.model.modelaLLmovesdata.MovesModel;
 import com.example.hesham.moves.model.modelaLLmovesdata.ResultModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,36 +66,41 @@ public class MainActivity extends AppCompatActivity
 
     int flag = 0;
     public static final String API_KEY = BuildConfig.API_KEY;
-    private boolean firstTimeLoaded=false;
-
+    private boolean firstTimeLoaded = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = (RecyclerView) findViewById(R.id.rec);
-        recyclerView.setHasFixedSize(true);
-        CommentUpdateModel.getInstance().setListener(this);
-        gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        CallApi();
-        IntentFilter intentFilter = new IntentFilter(NetworkStateChangeReceiver.NETWORK_AVAILABLE_ACTION);
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
-                        String networkStatus = isNetworkAvailable ? "connected" : "disconnected";
-                        if (networkStatus == "connected") {
-                            CallApi();
-                        } else if (networkStatus == "disconnected") {
-                            Toast.makeText(getApplicationContext(), "ther is no internet Connection pleas open the internet", Toast.LENGTH_LONG).show();
+        if (savedInstanceState == null) {
+            recyclerView = (RecyclerView) findViewById(R.id.rec);
+            recyclerView.setHasFixedSize(true);
+            CommentUpdateModel.getInstance().setListener(this);
+            gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+            recyclerView.setLayoutManager(gridLayoutManager);
+            CallApi();
+            IntentFilter intentFilter = new IntentFilter(NetworkStateChangeReceiver.NETWORK_AVAILABLE_ACTION);
+            LocalBroadcastManager.getInstance(this).registerReceiver(
+                    new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            boolean isNetworkAvailable = intent.getBooleanExtra(IS_NETWORK_AVAILABLE, false);
+                            String networkStatus = isNetworkAvailable ? "connected" : "disconnected";
+                            if (networkStatus == "connected") {
+                                CallApi();
+                            } else if (networkStatus == "disconnected") {
+                                Toast.makeText(getApplicationContext(), "ther is no internet Connection pleas open the internet", Toast.LENGTH_LONG).show();
 
+                            }
                         }
-                    }
-                }, intentFilter);
-
+                    }, intentFilter);
+        } else {
+            List<ResultModel> sPopularResult = (List<ResultModel>) savedInstanceState.get("P");
+            List<ResultModel> sTopRateResult = (List<ResultModel>) savedInstanceState.get("T");
+            setPopularResult(sPopularResult);
+            setTopRateResult(sTopRateResult);
+        }
     }
 
 
@@ -150,7 +157,6 @@ public class MainActivity extends AppCompatActivity
 //                        Log.d("Guinness", " the respons code of TopRate " + response.code());
 
 
-
                     }
 
                 }
@@ -187,7 +193,7 @@ public class MainActivity extends AppCompatActivity
                             Intent i = new Intent(MainActivity.this, Details.class);
                             ResultModel model = getFavourit().get(position);
                             i.putExtra("sampleObject", model);
-                            i.putExtra("fav","fav");
+                            i.putExtra("fav", "fav");
                             startActivity(i);
 
                         }
@@ -238,12 +244,13 @@ public class MainActivity extends AppCompatActivity
         }
         if (id == R.id.Favourit) {
             flag = 3;
-            if(firstTimeLoaded==false){
-                getLoaderManager().initLoader(Favourit_LOADER_ID, null,this);
-                firstTimeLoaded=true;
-            }else{
-                getLoaderManager().restartLoader(Favourit_LOADER_ID,null,this);
-            } }
+            if (firstTimeLoaded == false) {
+                getLoaderManager().initLoader(Favourit_LOADER_ID, null, this);
+                firstTimeLoaded = true;
+            } else {
+                getLoaderManager().restartLoader(Favourit_LOADER_ID, null, this);
+            }
+        }
         if (id == R.id.TopRate) {
             if (InternetConnection.checkConnection(MainActivity.this)) {
             } else {
@@ -267,28 +274,35 @@ public class MainActivity extends AppCompatActivity
     }
 
     public List<ResultModel> getFavourit() {
-          return Favourit;
+        return Favourit;
 //        Favourit= favoriteDbHelper.getAllFavorite();
-        }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            CallApi();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            CallApi();
-        }
     }
 
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//
+//        // Checks the orientation of the screen
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            CallApi();
+//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+//            CallApi();
+//        }
+//    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("P", (Serializable) getPopularResult());
+        outState.putSerializable("T", (Serializable) getTopRateResult());
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public void commentDelete() {
-        Log.e("Guinness","enter the DELETE Inteface Function");
-            getLoaderManager().restartLoader(Favourit_LOADER_ID,null,this);
-             adapter.notifyDataSetChanged();
+        Log.e("Guinness", "enter the DELETE Inteface Function");
+        getLoaderManager().restartLoader(Favourit_LOADER_ID, null, this);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -301,25 +315,26 @@ public class MainActivity extends AppCompatActivity
                 COLUMN_OVERVIEW
         };
 
-            if (id == 1) {
-                return new android.content.CursorLoader(MainActivity.this,
-                        CONTENT_URI,
-                        columns,
-                        null,
-                        null,
-                        null);
-            }
-            return null;
+        if (id == 1) {
+            return new android.content.CursorLoader(MainActivity.this,
+                    CONTENT_URI,
+                    columns,
+                    null,
+                    null,
+                    FavoriteContract.FavoriteEntry.COLUMN_MOVIEID);
+        }
+        return null;
 
     }
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Cursor mFavouritCursor =data;
-        if (mFavouritCursor !=null&&mFavouritCursor.getCount()>0){
-              Favourit= new ArrayList<>();
+        Cursor mFavouritCursor = data;
+        if (mFavouritCursor != null && mFavouritCursor.getCount() > 0) {
+            Favourit = new ArrayList<>();
             if (mFavouritCursor.moveToFirst()) {
                 do {
-                    Log.e("Guinness","enter loop");
+                    Log.e("Guinness", "enter loop");
                     ResultModel movie = new ResultModel();
                     movie.setId(Integer.parseInt(mFavouritCursor.getString(mFavouritCursor.getColumnIndex(COLUMN_MOVIEID))));
                     movie.setTitle(mFavouritCursor.getString(mFavouritCursor.getColumnIndex(COLUMN_TITLE)));
@@ -329,31 +344,29 @@ public class MainActivity extends AppCompatActivity
                     Favourit.add(movie);
 
                 } while (mFavouritCursor.moveToNext());
-                Log.e("Guinness","Loader set data after while loop");
+                Log.e("Guinness", "Loader set data after while loop");
                 adapter = new MoviesAdapter(Favourit, MainActivity.this);
                 recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
 
             }
 
         } else {
-            Toast.makeText(this,"there is no Favourit in the list ",Toast.LENGTH_SHORT).show();
-            Log.e("Guinness","enter else statment");
-            Favourit=new ArrayList<>();
+            Toast.makeText(this, "there is no Favourit in the list ", Toast.LENGTH_SHORT).show();
+            Log.e("Guinness", "enter else statment");
+            Favourit = new ArrayList<>();
             adapter = new MoviesAdapter(Favourit, MainActivity.this);
             recyclerView.setAdapter(adapter);
         }
 
         mFavouritCursor.close();
 
-        }
+    }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.e("Guinness","enter reset function ");
+        Log.e("Guinness", "enter reset function ");
         adapter = new MoviesAdapter(Favourit, MainActivity.this);
         recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
     }
 
@@ -361,7 +374,16 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         // re-queries for all tasks
-        getLoaderManager().restartLoader(Favourit_LOADER_ID,null,this);
+        getLoaderManager().restartLoader(Favourit_LOADER_ID, null, this);
 
+    }
+
+
+    public void setPopularResult(List<ResultModel> popularResult) {
+        PopularResult = popularResult;
+    }
+
+    public void setTopRateResult(List<ResultModel> topRateResult) {
+        TopRateResult = topRateResult;
     }
 }

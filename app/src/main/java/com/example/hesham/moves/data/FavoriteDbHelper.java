@@ -51,7 +51,8 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         final String SQL_CREATE_FAVORITE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_MOVIEID + " INTEGER PRIMARY KEY, " +
+                FavoriteContract.FavoriteEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                COLUMN_MOVIEID + " INTEGER , " +
                 COLUMN_TITLE + " TEXT NOT NULL, " +
                 COLUMN_USERRATING + " REAL NOT NULL, " +
                 COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
